@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import Icon from '../components/Icon'
 import FeaturedDealCard from '../components/FeaturedDealCard'
-import { featuredDeals } from '../data/listings'
+import { db } from '../lib/db'
+import { toFeaturedListingView } from '../lib/db/mappers'
+import type { Listing } from '../data/listings'
 
 const categories = [
   { label: 'SUVs', icon: 'directions_car' },
@@ -19,6 +22,22 @@ const stats = [
 ]
 
 export default function Home() {
+  const [featuredDeals, setFeaturedDeals] = useState<Listing[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      await db.seedIfEmpty()
+      const listings = await db.listListings({ status: 'active' })
+      const views = await Promise.all(listings.slice(0, 3).map(toFeaturedListingView))
+      if (!cancelled) setFeaturedDeals(views)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
     <div className="flex flex-col w-full">
       <div className="px-space-md pt-space-md pb-space-lg flex flex-col gap-space-lg">

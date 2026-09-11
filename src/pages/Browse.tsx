@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Icon from '../components/Icon'
 import BrowseListingCard from '../components/BrowseListingCard'
-import { browseListings } from '../data/listings'
+import { db } from '../lib/db'
+import { toBrowseListingView } from '../lib/db/mappers'
+import type { BrowseListing } from '../data/listings'
 
 const filterChips = [
   { id: 'price', label: 'Under $35,000', removable: true },
@@ -19,6 +21,21 @@ const viewModes = [
 export default function Browse() {
   const [activeChips, setActiveChips] = useState(filterChips.map((c) => c.id))
   const [viewMode, setViewMode] = useState<(typeof viewModes)[number]['id']>('list')
+  const [browseListings, setBrowseListings] = useState<BrowseListing[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      await db.seedIfEmpty()
+      const listings = await db.listListings({ status: 'active' })
+      const views = await Promise.all(listings.map(toBrowseListingView))
+      if (!cancelled) setBrowseListings(views)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const removeChip = (id: string) => setActiveChips((chips) => chips.filter((c) => c !== id))
 
