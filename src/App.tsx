@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Browse from './pages/Browse'
 import Placeholder from './pages/Placeholder'
 import DealerConsole from './pages/DealerConsole'
+import DealerConsoleDesktop from './pages/DealerConsoleDesktop'
 import Messages from './pages/Messages'
 
 export default function App() {
@@ -53,9 +54,16 @@ export default function App() {
         <Route
           path="/dealer"
           element={
-            <Layout title="Dealer Console" nav="dealer">
-              <DealerConsole />
-            </Layout>
+            <>
+              <div className="lg:hidden">
+                <Layout title="Dealer Console" nav="dealer">
+                  <DealerConsole />
+                </Layout>
+              </div>
+              <div className="hidden lg:block">
+                <DealerConsoleDesktop />
+              </div>
+            </>
           }
         />
         <Route
