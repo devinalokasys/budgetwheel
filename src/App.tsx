@@ -9,6 +9,8 @@ import DealerConsole from './pages/DealerConsole'
 import DealerConsoleDesktop from './pages/DealerConsoleDesktop'
 import DealPipeline from './pages/DealPipeline'
 import Messages from './pages/Messages'
+import AccountDesktop from './pages/AccountDesktop'
+import HomeDesktop from './pages/HomeDesktop'
 
 export default function App() {
   return (
@@ -17,9 +19,16 @@ export default function App() {
         <Route
           path="/"
           element={
-            <Layout title="Home">
-              <Home />
-            </Layout>
+            <>
+              <div className="lg:hidden">
+                <Layout title="Home">
+                  <Home />
+                </Layout>
+              </div>
+              <div className="hidden lg:block">
+                <HomeDesktop />
+              </div>
+            </>
           }
         />
         <Route
@@ -49,9 +58,16 @@ export default function App() {
         <Route
           path="/account"
           element={
-            <Layout title="Account">
-              <Placeholder icon="account_circle" title="Your Account" />
-            </Layout>
+            <>
+              <div className="lg:hidden">
+                <Layout title="Account">
+                  <Placeholder icon="account_circle" title="Your Account" />
+                </Layout>
+              </div>
+              <div className="hidden lg:block">
+                <AccountDesktop />
+              </div>
+            </>
           }
         />
         <Route

@@ -1,5 +1,33 @@
 # Changes
 
+## 0.6.0 — 2026-09-12
+
+Added desktop layouts for Home and Account, built from newly-received
+design mockups. Both pages are self-contained (`HomeDesktop.tsx`,
+`AccountDesktop.tsx`) and swapped in at `lg:` breakpoint via CSS, same
+pattern as the existing Dealer Console mobile/desktop split — the mobile
+versions are untouched.
+
+- **Home desktop**: hero search console, live telemetry ticker, buy/sell
+  dual-path panels, vehicle-class category grid, and a 4-car "Great Deals"
+  showcase (BMW, Tesla, RAV4, Audi). The showcase's specific numbers use
+  the real seeded listing data (already aligned in 0.5.1) rather than the
+  mockup's own figures, so a listing shows the same mileage/price
+  everywhere in the app. The Audi card's mockup content was cut short by
+  a message-length limit; completed it with real seed data and added a
+  market-average price to `seed.ts` so its "$1,900 Below Market" badge is
+  backed by an actual number instead of just copied text.
+- **Account desktop**: profile header, garage fleet (listed + stored
+  vehicles), escrow/inquiries, buying-power vault, KYC documents, and
+  market-alert preferences. No mobile Account design has been received
+  yet, so mobile still shows the placeholder.
+- New shared `DesktopHeader` (top nav, used by both pages) and
+  `DesktopFooter` (site footer, first one received) components.
+
+A "Saved Vehicles & Alerts" desktop mockup was also sent but cut off
+almost immediately — essentially no usable content arrived, so that page
+is not built yet.
+
 ## 0.5.1 — 2026-09-12
 
 Data alignment fixes: the mobile Dealer Console, desktop Dealer Console,
