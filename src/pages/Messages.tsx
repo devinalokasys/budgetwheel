@@ -64,7 +64,7 @@ export default function Messages() {
                   alt="2021 Toyota Camry SE"
                 />
                 <div className="absolute bottom-1 right-1 bg-surface-container-lowest/80 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] font-label-sm text-on-surface">
-                  VIN ••8941
+                  VIN ••8213
                 </div>
               </div>
               <div className="flex flex-col min-w-0 flex-1">
@@ -72,7 +72,7 @@ export default function Messages() {
                   2021 Toyota Camry SE
                 </h2>
                 <p className="font-body-sm text-body-sm text-on-surface-variant truncate">
-                  2.5L I4 • Nightshade Edition • 28,400 mi
+                  2.5L I4 • Nightshade Edition • 32,150 mi
                 </p>
                 <div className="mt-1.5 flex items-baseline gap-2">
                   <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">

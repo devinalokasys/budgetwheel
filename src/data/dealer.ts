@@ -67,7 +67,7 @@ export const tradeBids: TradeBid[] = [
   {
     id: 'camry-se',
     title: '2021 Toyota Camry SE',
-    meta: '32,150 mi • Pearl White • San Jose, CA',
+    meta: '32,150 mi • Pearl White • Portland, OR',
     asking: '$25,900',
     tags: [
       { label: 'Carfax 0 Acc', tone: 'secondary', icon: 'verified' },
@@ -83,13 +83,13 @@ export const tradeBids: TradeBid[] = [
   {
     id: 'accord-sport',
     title: '2020 Honda Accord Sport',
-    meta: '41,200 mi • Modern Steel • Fremont, CA',
+    meta: '52,800 mi • Modern Steel • Beaverton, OR',
     asking: '$22,200',
     tags: [
       { label: 'Clean 1-Owner', tone: 'primary' },
       { label: 'AI Inspection 96%', tone: 'neutral' },
     ],
-    algoTarget: '$21,800',
+    algoTarget: '$21,300',
     primaryLabel: 'Instant Bid',
     primaryIcon: 'arrow_forward',
   },
@@ -130,9 +130,9 @@ export const dealerInventory: DealerInventoryItem[] = [
     inquiries: 14,
     title: '2022 BMW 330i xDrive',
     vin: 'WBA5R7C09NF****',
-    mileage: '28,140 mi',
+    mileage: '28,100 mi',
     price: '$33,800',
-    priceNote: '$1,200 below market',
+    priceNote: '$1,450 below market',
     specs: [
       { label: 'Drivetrain', value: 'AWD 2.0T' },
       { label: 'Title', value: 'Clean 1-Owner', tone: 'secondary' },

@@ -19,8 +19,8 @@ export const seedUsers: User[] = [
   {
     id: 'user-private-1',
     type: 'consumer',
-    email: 'jane.seller@example.com',
-    displayName: 'Jane R.',
+    email: 'marcus.sterling@example.com',
+    displayName: 'Marcus Sterling',
     photoUrl: null,
     phone: null,
     createdAt: now - 90 * DAY,

@@ -1,5 +1,38 @@
 # Changes
 
+## 0.5.1 — 2026-09-12
+
+Data alignment fixes: the mobile Dealer Console, desktop Dealer Console,
+and Messages pages were each built from separate design mockups sent at
+different times, and each one invented slightly different numbers for what
+was supposed to be the same vehicle. Audited every vehicle that appears in
+more than one place and aligned them to the real seeded DB record
+(`src/lib/db/seed.ts`) as the source of truth:
+
+- **BMW 330i**: desktop Floor Inventory table had it as a 2021 at 33k mi
+  for $27,990 "Fair Market" — actually a 2022 at 28,100 mi for $33,800,
+  $1,450 below market (now matches the mobile console and the seeded
+  listing exactly).
+- **Tesla Model 3**: desktop table had a VIN typo (`...EB...` vs the
+  seeded `...EA...`) and showed 19k mi / "$1,100 below" instead of the
+  real 24,180 mi / $2,400 below market.
+- **Toyota Camry SE trade-in**: the mileage (28,400 / 32,150 / 41,200 mi),
+  the VIN suffix shown, and the seller's location (San Jose vs Portland)
+  disagreed across Messages, the mobile console, and the desktop console.
+  All now read 32,150 mi and the seeded VIN's actual last 4 digits.
+  "Metro Auto Group" as the top bidder's name is kept — that one's
+  actually consistent across multiple independently-received mockups, not
+  an error.
+- **Honda Accord Sport** trade-in: mileage and algo-target bid amount
+  disagreed between mobile and desktop; aligned to the desktop numbers
+  (more detailed/specific).
+- **Current user identity**: the seeded consumer account was named
+  "Jane R." with no page ever showing that name; the newly-received
+  Account page mockup names this same person "Marcus Sterling" — updated
+  the seed user (and the one place that showed a different name for the
+  same seller) to match, so the identity is consistent everywhere it's
+  shown.
+
 ## 0.5.0 — 2026-09-12
 
 Built out Saved, Sell, and Deal Pipeline (previously "coming soon"
