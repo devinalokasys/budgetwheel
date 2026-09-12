@@ -2,9 +2,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
+import Sell from './pages/Sell'
+import Saved from './pages/Saved'
 import Placeholder from './pages/Placeholder'
 import DealerConsole from './pages/DealerConsole'
 import DealerConsoleDesktop from './pages/DealerConsoleDesktop'
+import DealPipeline from './pages/DealPipeline'
 import Messages from './pages/Messages'
 
 export default function App() {
@@ -31,7 +34,7 @@ export default function App() {
           path="/sell"
           element={
             <Layout title="Sell">
-              <Placeholder icon="sell" title="Sell Your Car" />
+              <Sell />
             </Layout>
           }
         />
@@ -39,7 +42,7 @@ export default function App() {
           path="/saved"
           element={
             <Layout title="Saved">
-              <Placeholder icon="favorite" title="Saved Vehicles" />
+              <Saved />
             </Layout>
           }
         />
@@ -70,7 +73,7 @@ export default function App() {
           path="/dealer/deals"
           element={
             <Layout title="Deals" nav="dealer">
-              <Placeholder icon="local_offer" title="Deal Pipeline" />
+              <DealPipeline />
             </Layout>
           }
         />

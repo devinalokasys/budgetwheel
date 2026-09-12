@@ -23,7 +23,7 @@ export default function FeaturedDealCard({ listing }: { listing: Listing }) {
             </span>
           </div>
         </div>
-        <FavoriteButton className="absolute top-3 right-3" />
+        <FavoriteButton listingId={listing.id} className="absolute top-3 right-3" />
         <div className="absolute bottom-2 left-2 bg-surface-container-lowest/80 backdrop-blur-sm px-2 py-0.5 rounded text-on-surface-variant font-label-sm text-label-sm">
           {listing.location}
         </div>
@@ -42,9 +42,9 @@ export default function FeaturedDealCard({ listing }: { listing: Listing }) {
             <div key={spec.label} className="flex flex-col px-2 py-1">
               <span className="font-label-sm text-label-sm text-outline">{spec.label}</span>
               <span className="font-label-numeric-md text-label-numeric-md text-on-surface flex items-center gap-1">
-                {spec.label === 'CARFAX' || spec.label === 'HISTORY' || spec.label === 'RECORD' ? (
+                {spec.icon ? (
                   <>
-                    <Icon name={listing.historyPill.icon} className="text-[16px] text-secondary" />
+                    <Icon name={spec.icon} className="text-[16px] text-secondary" />
                     <span className="text-secondary">{spec.value}</span>
                   </>
                 ) : (

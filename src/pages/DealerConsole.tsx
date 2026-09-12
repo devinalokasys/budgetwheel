@@ -151,7 +151,10 @@ export default function DealerConsole() {
         <div className="flex items-center justify-between">
           <h2 className="font-headline-sm text-headline-sm text-on-surface">Floor Inventory</h2>
           <button
-            onClick={() => trigger('Filters reset to default view')}
+            onClick={() => {
+              setActiveTab('all')
+              trigger('Filters reset to default view')
+            }}
             className="font-label-sm text-label-sm text-primary flex items-center gap-0.5 hover:underline"
           >
             <span>Reset Filters</span>

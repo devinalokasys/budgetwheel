@@ -20,7 +20,7 @@ export interface Listing {
   rating?: string
   verified?: string
   distance: string
-  specs: { label: string; value: string }[]
+  specs: { label: string; value: string; icon?: string }[]
 }
 
 export interface BrowseListing {

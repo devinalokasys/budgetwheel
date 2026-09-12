@@ -1,5 +1,35 @@
 # Changes
 
+## 0.5.0 — 2026-09-12
+
+Built out Saved, Sell, and Deal Pipeline (previously "coming soon"
+placeholders) and did a polish pass on already-built pages. Account stays
+a placeholder — that design is still to come.
+
+- **Saved**: real favorites, not a mockup. `FavoriteButton` now persists
+  through `db.saveListing`/`unsaveListing`/`isSaved` (was local-only
+  `useState`); the Saved page reads `db.listSavedListings` and reuses
+  `BrowseListingCard` as-is. Runs as a fixed demo identity
+  (`src/lib/currentUser.ts`) since there's no auth yet.
+- **Sell**: a real trade-in submission form (year/make/model/mileage/
+  condition/VIN) that calls `db.createTradeSubmission`, not a static page.
+- **Deal Pipeline** (`/dealer/deals`): lists open trade submissions
+  marketplace-wide via `db.listTradeSubmissions('open')`, with a working
+  "Submit Offer" that calls `db.createOffer` — so a submission from Sell
+  shows up here for real, and submitting a bid here is a genuine write, not
+  a toast pretending to be one.
+- **Polish**: Home's search form, category tiles, and CTA cards now
+  actually navigate (were inert decorative divs) — category tiles and the
+  price dropdown pass real filters to Browse via URL params
+  (`bodyType`, `priceMaxCents`), which Browse now applies to its
+  `db.listListings` call instead of only showing static decorative filter
+  chips. Browse's search box is wired to a real (client-side) title
+  match, with a working clear button and an empty-results state. Fixed a
+  "Showing 1 verified cars" pluralization bug, a "Reset Filters" button
+  that didn't reset its own local state, and replaced a fragile
+  label-string-matching check in `FeaturedDealCard` with an explicit field
+  on the mapper output.
+
 ## 0.4.0 — 2026-09-12
 
 Added light/dark theme support. Every color in the app already went through

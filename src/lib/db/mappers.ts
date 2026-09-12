@@ -111,7 +111,7 @@ export async function toFeaturedListingView(l: VehicleListing): Promise<Listing>
     distance: `${l.location.city}, ${l.location.state}`,
     specs: [
       { label: 'MILEAGE', value: formatMileageFull(l.mileage) },
-      { label: 'CARFAX', value: historyPill.label.split(' • ')[0] },
+      { label: 'CARFAX', value: historyPill.label.split(' • ')[0], icon: historyPill.icon },
     ],
   }
 }

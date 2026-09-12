@@ -19,7 +19,7 @@ export default function BrowseListingCard({ listing }: { listing: BrowseListing 
             <Icon name={listing.dealBadge.icon} className="text-[14px]" />
             {listing.dealBadge.label}
           </span>
-          <FavoriteButton className="pointer-events-auto shadow-md" />
+          <FavoriteButton listingId={listing.id} className="pointer-events-auto shadow-md" />
         </div>
         <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-lowest/85 backdrop-blur-md text-primary text-label-sm font-label-sm">
           <Icon name={listing.historyPill.icon} className="text-[13px]" filled />

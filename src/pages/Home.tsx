@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon'
 import FeaturedDealCard from '../components/FeaturedDealCard'
 import { db } from '../lib/db'
 import { toFeaturedListingView } from '../lib/db/mappers'
 import type { Listing } from '../data/listings'
+import type { VehicleListing } from '../lib/db/schema'
 
-const categories = [
-  { label: 'SUVs', icon: 'directions_car' },
-  { label: 'Sedans', icon: 'directions_car' },
-  { label: 'Trucks', icon: 'local_shipping' },
-  { label: 'Electric / EV', icon: 'electric_car' },
-  { label: 'Luxury', icon: 'workspace_premium' },
-  { label: 'Hatchback', icon: 'directions_car' },
+const categories: { label: string; icon: string; bodyType: VehicleListing['bodyType'] }[] = [
+  { label: 'SUVs', icon: 'directions_car', bodyType: 'suv' },
+  { label: 'Sedans', icon: 'directions_car', bodyType: 'sedan' },
+  { label: 'Trucks', icon: 'local_shipping', bodyType: 'truck' },
+  { label: 'Electric / EV', icon: 'electric_car', bodyType: 'ev' },
+  { label: 'Luxury', icon: 'workspace_premium', bodyType: 'other' },
+  { label: 'Hatchback', icon: 'directions_car', bodyType: 'hatchback' },
 ]
 
 const stats = [
@@ -22,7 +24,15 @@ const stats = [
 ]
 
 export default function Home() {
+  const navigate = useNavigate()
   const [featuredDeals, setFeaturedDeals] = useState<Listing[]>([])
+  const maxPriceRef = useRef<HTMLSelectElement>(null)
+
+  function handleSearch(e: FormEvent) {
+    e.preventDefault()
+    const priceMax = maxPriceRef.current?.value
+    navigate(priceMax ? `/browse?priceMaxCents=${Number(priceMax) * 100}` : '/browse')
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -56,10 +66,7 @@ export default function Home() {
               <span className="text-primary">Under market value.</span>
             </h2>
           </div>
-          <form
-            className="flex flex-col gap-space-sm relative z-10"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="flex flex-col gap-space-sm relative z-10" onSubmit={handleSearch}>
             <div className="relative flex items-center">
               <Icon
                 name="directions_car"
@@ -78,6 +85,7 @@ export default function Home() {
                   className="absolute left-3 text-on-surface-variant text-[20px]"
                 />
                 <select
+                  ref={maxPriceRef}
                   defaultValue=""
                   className="w-full h-11 pl-10 pr-4 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg focus:outline-none focus:bg-surface-container shadow-inner appearance-none cursor-pointer"
                 >
@@ -116,7 +124,10 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 gap-space-sm">
-          <div className="relative overflow-hidden bg-surface-container p-space-md rounded-xl flex flex-col justify-between shadow-md active:scale-[0.98] transition-all cursor-pointer">
+          <button
+            onClick={() => navigate('/browse')}
+            className="relative overflow-hidden bg-surface-container p-space-md rounded-xl flex flex-col justify-between shadow-md active:scale-[0.98] transition-all text-left"
+          >
             <div className="w-9 h-9 rounded-lg bg-primary-container/20 text-primary flex items-center justify-center mb-space-sm">
               <Icon name="directions_car" className="text-[20px]" />
             </div>
@@ -130,8 +141,11 @@ export default function Home() {
               <span>Explore inventory</span>
               <Icon name="arrow_forward" className="text-[14px]" />
             </div>
-          </div>
-          <div className="relative overflow-hidden bg-surface-container p-space-md rounded-xl flex flex-col justify-between shadow-md active:scale-[0.98] transition-all cursor-pointer">
+          </button>
+          <button
+            onClick={() => navigate('/sell')}
+            className="relative overflow-hidden bg-surface-container p-space-md rounded-xl flex flex-col justify-between shadow-md active:scale-[0.98] transition-all text-left"
+          >
             <div className="w-9 h-9 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center mb-space-sm">
               <Icon name="sell" className="text-[20px]" />
             </div>
@@ -147,7 +161,7 @@ export default function Home() {
               <span>Get cash estimate</span>
               <Icon name="arrow_forward" className="text-[14px]" />
             </div>
-          </div>
+          </button>
         </div>
 
         <div className="bg-surface-container-lowest rounded-xl p-space-sm overflow-x-auto shadow-inner">
@@ -171,14 +185,18 @@ export default function Home() {
             <h3 className="font-headline-sm text-headline-sm text-on-surface">
               Browse by Category
             </h3>
-            <span className="font-label-sm text-label-sm text-primary cursor-pointer">
+            <button
+              onClick={() => navigate('/browse')}
+              className="font-label-sm text-label-sm text-primary"
+            >
               View All
-            </span>
+            </button>
           </div>
           <div className="grid grid-cols-3 gap-space-xs">
             {categories.map((category) => (
               <button
                 key={category.label}
+                onClick={() => navigate(`/browse?bodyType=${category.bodyType}`)}
                 className="flex flex-col items-center justify-center p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container active:scale-95 transition-all text-on-surface group"
               >
                 <Icon
@@ -208,7 +226,10 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-surface-container-low to-surface-container p-space-md rounded-xl flex items-center justify-between shadow-lg">
+        <button
+          onClick={() => navigate('/browse')}
+          className="bg-gradient-to-r from-surface-container-low to-surface-container p-space-md rounded-xl flex items-center justify-between shadow-lg text-left"
+        >
           <div className="flex items-center gap-space-sm">
             <div className="w-10 h-10 rounded-full bg-secondary-container/20 text-secondary flex items-center justify-center">
               <Icon name="verified" className="text-[24px]" />
@@ -223,7 +244,7 @@ export default function Home() {
             </div>
           </div>
           <Icon name="chevron_right" className="text-outline text-[20px]" />
-        </div>
+        </button>
       </div>
     </div>
   )
