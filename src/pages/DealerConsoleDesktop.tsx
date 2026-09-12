@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { Toast } from '../components/Toast'
 import { useToast } from '../hooks/useToast'
+import { useTheme } from '../hooks/useTheme'
 import {
   sidebarNav,
   desktopKpis,
@@ -55,6 +56,7 @@ const toolTone: Record<(typeof quickTools)[number]['tone'], string> = {
 export default function DealerConsoleDesktop() {
   const { message, trigger } = useToast()
   const navigate = useNavigate()
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <div className="bg-surface font-body-md text-on-surface antialiased min-h-screen">
@@ -126,6 +128,13 @@ export default function DealerConsoleDesktop() {
             >
               <Icon name="add" className="text-[18px]" />
               Add Vehicle
+            </button>
+            <button
+              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              onClick={toggleTheme}
+              className="p-space-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-colors"
+            >
+              <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} className="text-[22px]" />
             </button>
             <button
               aria-label="Notifications"

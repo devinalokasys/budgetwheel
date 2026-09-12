@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import Icon from './Icon'
+import { useTheme } from '../hooks/useTheme'
 
 interface HeaderProps {
   title: string
@@ -8,6 +9,7 @@ interface HeaderProps {
 
 export default function Header({ title, showBack = false }: HeaderProps) {
   const navigate = useNavigate()
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <header className="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.35)]">
@@ -32,6 +34,13 @@ export default function Header({ title, showBack = false }: HeaderProps) {
           </span>
         </div>
         <div className="flex items-center gap-space-xs shrink-0">
+          <button
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            onClick={toggleTheme}
+            className="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors"
+          >
+            <Icon name={theme === 'dark' ? 'light_mode' : 'dark_mode'} className="text-[22px]" />
+          </button>
           <button
             aria-label="Notifications"
             onClick={() => navigate('/messages')}

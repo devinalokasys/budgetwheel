@@ -1,5 +1,34 @@
 # Changes
 
+## 0.4.0 — 2026-09-12
+
+Added light/dark theme support. Every color in the app already went through
+semantic Tailwind tokens (`bg-primary`, `text-on-surface-variant`, etc.), so
+the implementation is a CSS-variable swap under a `.dark` class rather than
+per-component changes:
+
+- `src/index.css`'s `@theme` block now holds a new, hand-designed **light**
+  palette (the only design mockups received were dark-only, so this pairs
+  each dark token with an accessible light counterpart — reusing M3's
+  scheme-invariant `*-fixed` roles unchanged, swapping `inverse-*` roles,
+  and deepening `secondary`/`tertiary` base tones for contrast on white). A
+  `.dark { ... }` block holds the original dark values, unchanged.
+- `@custom-variant dark (&:where(.dark, .dark *));` added — Tailwind v4's
+  default `dark:` is media-query-only; this enables class-based toggling.
+- `src/contexts/ThemeContext.tsx` + `src/hooks/useTheme.ts`: theme state,
+  persisted to `localStorage`, defaulting to `prefers-color-scheme` when
+  nothing is stored yet.
+- A light/dark toggle button in `Header.tsx` (covers every route through
+  the shared `Layout`) and a second one in `DealerConsoleDesktop.tsx`'s own
+  header (the one page that doesn't use `Layout`).
+- `index.html` drops the hardcoded `class="dark"` and gets a small inline
+  blocking script so the correct theme applies before first paint (no
+  flash of the wrong theme).
+- Verified in a real browser across Home/Browse/Messages/Dealer Console
+  (mobile + desktop): default-light under a light system preference,
+  default-dark under a dark system preference, manual toggle, and
+  persistence across reload.
+
 ## 0.3.0 — 2026-09-11
 
 Added a real data layer (`src/lib/db`) behind a single `DataProvider`
