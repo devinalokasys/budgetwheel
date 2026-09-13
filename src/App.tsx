@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Responsive from './components/Responsive'
 import DesktopPageShell from './components/DesktopPageShell'
+import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
 import Sell from './pages/Sell'
@@ -14,6 +15,7 @@ import DealPipelineDesktop from './pages/DealPipelineDesktop'
 import Messages from './pages/Messages'
 import AccountDesktop from './pages/AccountDesktop'
 import HomeDesktop from './pages/HomeDesktop'
+import Login from './pages/Login'
 
 export default function App() {
   return (
@@ -49,94 +51,107 @@ export default function App() {
             />
           }
         />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/sell"
           element={
-            <Responsive
-              mobile={
-                <Layout title="Sell">
-                  <Sell />
-                </Layout>
-              }
-              desktop={
-                <DesktopPageShell>
-                  <Sell />
-                </DesktopPageShell>
-              }
-            />
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Sell">
+                    <Sell />
+                  </Layout>
+                }
+                desktop={
+                  <DesktopPageShell>
+                    <Sell />
+                  </DesktopPageShell>
+                }
+              />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/saved"
           element={
-            <Responsive
-              mobile={
-                <Layout title="Saved">
-                  <Saved />
-                </Layout>
-              }
-              desktop={
-                <DesktopPageShell active="saved">
-                  <Saved />
-                </DesktopPageShell>
-              }
-            />
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Saved">
+                    <Saved />
+                  </Layout>
+                }
+                desktop={
+                  <DesktopPageShell active="saved">
+                    <Saved />
+                  </DesktopPageShell>
+                }
+              />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/account"
           element={
-            <Responsive
-              mobile={
-                <Layout title="Account">
-                  <Placeholder icon="account_circle" title="Your Account" />
-                </Layout>
-              }
-              desktop={<AccountDesktop />}
-            />
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Account">
+                    <Placeholder icon="account_circle" title="Your Account" />
+                  </Layout>
+                }
+                desktop={<AccountDesktop />}
+              />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/dealer"
           element={
-            <Responsive
-              mobile={
-                <Layout title="Dealer Console" nav="dealer">
-                  <DealerConsole />
-                </Layout>
-              }
-              desktop={<DealerConsoleDesktop />}
-            />
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Dealer Console" nav="dealer">
+                    <DealerConsole />
+                  </Layout>
+                }
+                desktop={<DealerConsoleDesktop />}
+              />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/dealer/deals"
           element={
-            <Responsive
-              mobile={
-                <Layout title="Deals" nav="dealer">
-                  <DealPipeline />
-                </Layout>
-              }
-              desktop={<DealPipelineDesktop />}
-            />
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Deals" nav="dealer">
+                    <DealPipeline />
+                  </Layout>
+                }
+                desktop={<DealPipelineDesktop />}
+              />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/messages"
           element={
-            <Responsive
-              mobile={
-                <Layout title="Direct Messages" showBack nav="none">
-                  <Messages />
-                </Layout>
-              }
-              desktop={
-                <DesktopPageShell active="messages">
-                  <Messages />
-                </DesktopPageShell>
-              }
-            />
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Direct Messages" showBack nav="none">
+                    <Messages />
+                  </Layout>
+                }
+                desktop={
+                  <DesktopPageShell active="messages">
+                    <Messages />
+                  </DesktopPageShell>
+                }
+              />
+            </ProtectedRoute>
           }
         />
       </Routes>

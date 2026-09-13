@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Icon from '../components/Icon'
 import { db } from '../lib/db'
-import { CURRENT_DEALER_ID } from '../lib/currentUser'
+import { useAuth } from '../hooks/useAuth'
 import type { TradeSubmission } from '../lib/db/schema'
 
 function formatUsd(cents: number): string {
@@ -20,7 +20,7 @@ function timeRemaining(closesAt: number | null): string | null {
   return hours < 24 ? `${hours}h remaining` : `${Math.round(hours / 24)}d remaining`
 }
 
-function SubmissionCard({ submission }: { submission: TradeSubmission }) {
+function SubmissionCard({ submission, dealerId }: { submission: TradeSubmission; dealerId: string }) {
   const [amount, setAmount] = useState(
     submission.aiRecommendationCents ? String(submission.aiRecommendationCents / 100) : '',
   )
@@ -35,7 +35,7 @@ function SubmissionCard({ submission }: { submission: TradeSubmission }) {
       kind: 'trade_bid',
       listingId: null,
       tradeSubmissionId: submission.id,
-      fromUserId: CURRENT_DEALER_ID,
+      fromUserId: dealerId,
       toUserId: submission.sellerId,
       amountCents: cents,
       status: 'pending',
@@ -128,6 +128,7 @@ function SubmissionCard({ submission }: { submission: TradeSubmission }) {
 }
 
 export default function DealPipeline() {
+  const { user } = useAuth()
   const [submissions, setSubmissions] = useState<TradeSubmission[] | null>(null)
 
   useEffect(() => {
@@ -168,7 +169,7 @@ export default function DealPipeline() {
       ) : (
         <div className="flex flex-col gap-space-sm">
           {submissions.map((submission) => (
-            <SubmissionCard key={submission.id} submission={submission} />
+            <SubmissionCard key={submission.id} submission={submission} dealerId={user?.uid ?? ''} />
           ))}
         </div>
       )}

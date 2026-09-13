@@ -3,17 +3,19 @@ import Icon from '../components/Icon'
 import BrowseListingCard from '../components/BrowseListingCard'
 import { db } from '../lib/db'
 import { toBrowseListingView } from '../lib/db/mappers'
-import { CURRENT_CONSUMER_ID } from '../lib/currentUser'
+import { useAuth } from '../hooks/useAuth'
 import type { BrowseListing } from '../data/listings'
 
 export default function Saved() {
+  const { user } = useAuth()
   const [listings, setListings] = useState<BrowseListing[] | null>(null)
 
   useEffect(() => {
+    if (!user) return
     let cancelled = false
     async function load() {
       await db.seedIfEmpty()
-      const saved = await db.listSavedListings(CURRENT_CONSUMER_ID)
+      const saved = await db.listSavedListings(user!.uid)
       const vehicles = await Promise.all(
         saved.map(async (row) => {
           const listing = await db.getListing(row.listingId)
@@ -28,7 +30,7 @@ export default function Saved() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [user])
 
   if (listings === null) {
     return null

@@ -1,5 +1,33 @@
 # Changes
 
+## 0.8.0 — 2026-09-13
+
+Real authentication (Google Sign-In via Firebase Auth), replacing the
+hardcoded demo user (`CURRENT_CONSUMER_ID`/`CURRENT_DEALER_ID`, now
+deleted) everywhere it was used — favoriting, selling, and dealer offers
+all act as the real signed-in user now. Follows the sibling portfolio
+apps' pattern (a plain auth module + hook, `firebase/auth` dynamically
+imported so it's not in the main bundle for visitors who never sign in),
+adapted to use a Context (`AuthContext`, mirroring the existing
+`ThemeContext`) rather than prop-drilling from the root — this app's
+routed, multi-file page structure isn't the siblings' single-page shape,
+so a root-level prop hand-off would mean threading auth through ~10
+intermediate components just to reach the headers.
+
+- New `/login` page, `ProtectedRoute` guarding `/sell`, `/saved`,
+  `/messages`, `/account`, `/dealer`, `/dealer/deals` (redirects to
+  `/login` and back). `/` and `/browse` stay public.
+- First-sign-in provisioning: creates a `User` doc (consumer by default)
+  on first login, matching chess-master's `upsertUserProfile` pattern.
+- Both headers now show the signed-in user's photo/name with a sign-out
+  action, or a "Sign In" button when signed out. Desktop header's "Saved"
+  count is now real (`db.listSavedListings`), not a hardcoded `(4)`.
+- No Firebase project exists yet, so sign-in isn't actually usable in
+  this build — verified instead that the app degrades correctly: the
+  auth check resolves to "signed out" rather than hanging, and clicking
+  sign-in shows a clear error rather than crashing. Wiring a real project
+  is next.
+
 ## 0.7.0 — 2026-09-13
 
 Start of the "make this a real app" work: authentication, a real

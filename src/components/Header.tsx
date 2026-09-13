@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import Icon from './Icon'
 import { useTheme } from '../hooks/useTheme'
+import { useAuth } from '../hooks/useAuth'
 
 interface HeaderProps {
   title: string
@@ -10,6 +11,7 @@ interface HeaderProps {
 export default function Header({ title, showBack = false }: HeaderProps) {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
+  const { user, signOut } = useAuth()
 
   return (
     <header className="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.35)]">
@@ -49,9 +51,27 @@ export default function Header({ title, showBack = false }: HeaderProps) {
             <Icon name="notifications" className="text-[22px]" />
             <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary-container ring-2 ring-surface" />
           </button>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <Icon name="person" className="text-on-primary text-[18px]" />
-          </div>
+          {user ? (
+            <button
+              aria-label="Sign out"
+              onClick={signOut}
+              title={user.displayName ?? user.email ?? 'Signed in'}
+              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center overflow-hidden"
+            >
+              {user.photoURL ? (
+                <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <Icon name="person" className="text-on-primary text-[18px]" />
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate('/login')}
+              className="h-9 px-3 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm"
+            >
+              Sign in
+            </button>
+          )}
         </div>
       </div>
     </header>

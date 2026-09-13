@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Icon from './Icon'
 import { db } from '../lib/db'
-import { CURRENT_CONSUMER_ID } from '../lib/currentUser'
+import { useAuth } from '../hooks/useAuth'
 
 interface FavoriteButtonProps {
   listingId: string
@@ -10,26 +11,36 @@ interface FavoriteButtonProps {
 }
 
 export default function FavoriteButton({ listingId, className = '', onChange }: FavoriteButtonProps) {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
+    if (!user) {
+      setSaved(false)
+      return
+    }
     let cancelled = false
-    db.isSaved(CURRENT_CONSUMER_ID, listingId).then((value) => {
+    db.isSaved(user.uid, listingId).then((value) => {
       if (!cancelled) setSaved(value)
     })
     return () => {
       cancelled = true
     }
-  }, [listingId])
+  }, [listingId, user])
 
   const toggle = async () => {
+    if (!user) {
+      navigate('/login')
+      return
+    }
     const next = !saved
     setSaved(next)
     onChange?.(next)
     if (next) {
-      await db.saveListing(CURRENT_CONSUMER_ID, listingId)
+      await db.saveListing(user.uid, listingId)
     } else {
-      await db.unsaveListing(CURRENT_CONSUMER_ID, listingId)
+      await db.unsaveListing(user.uid, listingId)
     }
   }
 

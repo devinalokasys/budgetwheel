@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import Icon from '../components/Icon'
 import { db } from '../lib/db'
-import { CURRENT_CONSUMER_ID } from '../lib/currentUser'
+import { useAuth } from '../hooks/useAuth'
 import type { Condition } from '../lib/db/schema'
 
 const conditions: { value: Condition; label: string }[] = [
@@ -13,17 +13,19 @@ const conditions: { value: Condition; label: string }[] = [
 const HOUR = 60 * 60 * 1000
 
 export default function Sell() {
+  const { user } = useAuth()
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [condition, setCondition] = useState<Condition>('good')
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (!user) return
     const form = new FormData(e.currentTarget)
     setSubmitting(true)
     await db.createTradeSubmission({
       id: `trade-${crypto.randomUUID()}`,
-      sellerId: CURRENT_CONSUMER_ID,
+      sellerId: user.uid,
       vin: String(form.get('vin') ?? '').toUpperCase(),
       year: Number(form.get('year')),
       make: String(form.get('make')),
