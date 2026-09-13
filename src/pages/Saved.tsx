@@ -55,7 +55,7 @@ export default function Saved() {
           {listings.length} saved {listings.length === 1 ? 'vehicle' : 'vehicles'}
         </span>
       </div>
-      <div className="px-space-md py-space-sm flex flex-col gap-space-md">
+      <div className="px-space-md py-space-sm flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-space-md">
         {listings.map((listing) => (
           <BrowseListingCard key={listing.id} listing={listing} />
         ))}

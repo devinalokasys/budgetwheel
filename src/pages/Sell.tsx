@@ -59,7 +59,7 @@ export default function Sell() {
   }
 
   return (
-    <div className="flex flex-col w-full px-space-md pt-space-md pb-space-xl gap-space-lg">
+    <div className="flex flex-col w-full lg:max-w-xl lg:mx-auto px-space-md pt-space-md pb-space-xl gap-space-lg">
       <div className="relative overflow-hidden rounded-xl bg-surface-container-low p-space-md shadow-xl flex flex-col gap-space-xs">
         <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-secondary/15 blur-3xl pointer-events-none" />
         <div className="flex items-center gap-space-xs relative z-10">

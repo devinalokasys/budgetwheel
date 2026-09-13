@@ -1,5 +1,35 @@
 # Changes
 
+## 0.7.0 — 2026-09-13
+
+Start of the "make this a real app" work: authentication, a real
+Firestore backend, and deployment come next.
+
+- Fixed a real perf/correctness issue: every mobile/desktop-split route
+  (`/`, `/account`, `/dealer`) was mounting *both* layouts simultaneously
+  and hiding one with CSS (`lg:hidden` / `hidden lg:block`), which meant
+  each page's data-fetching `useEffect` ran twice on every load — wasteful
+  today, and would have doubled real Firestore reads once the app has a
+  real backend. New `useIsDesktop` hook + `Responsive` component mount
+  only the layout that matches the actual viewport, verified via Playwright
+  (confirmed single-mount at both breakpoints, and correct swap on live
+  resize).
+- Corrected the footer to the real company name (Aloka Systems LLC).
+- Gave every page a real desktop layout — previously only Home, Account,
+  and Dealer Console had one, so navigating to Browse, Saved, Sell,
+  Messages, or Deal Pipeline from a desktop page dropped you into the
+  mobile bottom-nav layout squeezed onto a wide screen: a jarring format
+  switch, and in Deal Pipeline's case an actually-unreachable page (no
+  link to it existed anywhere on desktop). New `DesktopPageShell`
+  (consumer pages: shared top-nav header + footer) and `DealerDesktopShell`
+  (extracted from `DealerConsoleDesktop`, now shared with the new
+  `DealPipelineDesktop` so dealer-portal pages stay inside the same
+  sidebar chrome rather than jumping to the consumer format). Browse and
+  Saved's listing lists become responsive grids at `lg:`/`xl:` rather than
+  a single narrow column. Also added a real "Deal Pipeline" entry to the
+  dealer sidebar nav (previously missing) and marked the sidebar's other
+  not-yet-built items as visibly disabled rather than silently dead links.
+
 ## 0.6.0 — 2026-09-12
 
 Added desktop layouts for Home and Account, built from newly-received

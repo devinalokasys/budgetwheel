@@ -57,7 +57,7 @@ export default function DesktopFooter() {
         </div>
         <div className="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
           <p className="font-body-sm text-body-sm text-outline">
-            © 2026 BudgetWheels Automotive Technologies Inc. All rights reserved.
+            © 2026 Aloka Systems LLC. All rights reserved.
           </p>
           <div className="flex items-center gap-space-lg font-body-sm text-body-sm text-outline">
             {['Privacy Policy', 'Terms of Service', 'Security Disclosures', 'API Status'].map((link) => (

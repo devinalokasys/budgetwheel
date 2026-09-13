@@ -12,7 +12,7 @@ export default function Messages() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]['id']>('garage')
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full lg:max-w-2xl lg:mx-auto">
       <div className="px-gutter-sm pt-space-md pb-space-sm">
         <div className="bg-surface-container-low p-1 rounded-xl flex items-center gap-1 shadow-sm overflow-x-auto scrollbar-none">
           {tabs.map((tab) => (

@@ -1,9 +1,10 @@
 export const sidebarNav = [
-  { id: 'dealer-portal', label: 'Inventory Desk', icon: 'speed' },
-  { id: 'inventory-management', label: 'Vehicle Stock', icon: 'directions_car' },
-  { id: 'leads-inquiries', label: 'Buyer Inquiries', icon: 'contact_page' },
-  { id: 'market-analytics', label: 'Pricing Analytics', icon: 'monitoring' },
-  { id: 'dealer-settings', label: 'Store Configuration', icon: 'settings' },
+  { id: 'dealer-portal', label: 'Inventory Desk', icon: 'speed', to: '/dealer' },
+  { id: 'deal-pipeline', label: 'Deal Pipeline', icon: 'local_offer', to: '/dealer/deals' },
+  { id: 'inventory-management', label: 'Vehicle Stock', icon: 'directions_car', to: null },
+  { id: 'leads-inquiries', label: 'Buyer Inquiries', icon: 'contact_page', to: null },
+  { id: 'market-analytics', label: 'Pricing Analytics', icon: 'monitoring', to: null },
+  { id: 'dealer-settings', label: 'Store Configuration', icon: 'settings', to: null },
 ]
 
 export interface DesktopKpi {

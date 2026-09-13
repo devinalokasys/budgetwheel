@@ -193,7 +193,7 @@ export default function Browse() {
           </p>
         </div>
       ) : (
-        <div className="px-space-md py-space-sm flex flex-col gap-space-md">
+        <div className="px-space-md py-space-sm flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-space-md">
           {browseListings.map((listing) => (
             <BrowseListingCard key={listing.id} listing={listing} />
           ))}
