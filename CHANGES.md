@@ -1,5 +1,40 @@
 # Changes
 
+## 0.9.0 — 2026-09-14
+
+Real Firestore backend is live: created the `budgetwheel` Firebase project,
+enabled Authentication (Google) and Firestore, deployed security rules,
+seeded production data, and verified the actual production build reads
+from it end-to-end (6 listings, images, dealer names all rendering
+correctly against the live database, not local IndexedDB).
+
+- `firestore.rules`: owner-keyed writes per collection matching
+  `docs/db-design.md`'s schema (public read on listings/images/dealer
+  profiles/Carfax reports since browsing is public; everything else
+  scoped to the signed-in user who owns it). `firestore.indexes.json`
+  starts empty — Firestore will surface a direct link if a composite
+  index is ever actually needed by a query.
+- `scripts/seedFirestore.ts` (`npm run seed:firestore`): a one-time
+  Admin SDK seed script, since the rules correctly reject the old
+  client-side `seedIfEmpty()` path now that they're enforced —
+  `firestoreProvider.seedIfEmpty()` is now a no-op for that reason (the
+  local/IndexedDB provider's own `seedIfEmpty` is unaffected and still
+  runs per-browser as before).
+- `.env.production` (committed — these are public client identifiers,
+  not secrets, same as every sibling repo) sets
+  `VITE_DATA_PROVIDER=firestore` so production builds default to the
+  real backend; local dev keeps defaulting to IndexedDB.
+- `firebase.json`/`.firebaserc` added (hosting config + security headers,
+  matching the sibling repos' pattern) — deployment itself is next.
+- Note: the `firebase` CLI's Firestore-specific subcommands
+  (`firestore:databases:list`, `firestore:deploy`, etc.) reliably hang
+  and get killed on this machine, in both the sandboxed tool environment
+  and a plain terminal — worked around it by publishing rules via the
+  console and seeding via the Admin SDK directly (`tsx`), neither of
+  which touches the broken CLI path. `firebase login`/`projects:list`/
+  `apps:*` all work fine, so this seems specific to Firestore's own
+  subcommands, not Firebase auth or general CLI health.
+
 ## 0.8.0 — 2026-09-13
 
 Real authentication (Google Sign-In via Firebase Auth), replacing the

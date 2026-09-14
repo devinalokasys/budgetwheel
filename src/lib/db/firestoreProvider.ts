@@ -19,13 +19,6 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { getFirebaseStorage, getFirestoreDb } from '../firebase'
 import type { DataProvider } from './provider'
 import type { VehicleImage, VehicleListing } from './schema'
-import {
-  buildSeedImages,
-  seedDealerProfiles,
-  seedListingSpecs,
-  seedTradeSubmissions,
-  seedUsers,
-} from './seed'
 
 function newId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`
@@ -250,31 +243,10 @@ export const firestoreProvider: DataProvider = {
   },
 
   async seedIfEmpty() {
-    const db = getFirestoreDb()
-    const metaRef = doc(db, 'meta', 'status')
-    const meta = await getDoc(metaRef)
-    if (meta.exists() && (meta.data() as any).seeded) return
-
-    for (const user of seedUsers) await setDoc(doc(db, 'users', user.id), user)
-    for (const profile of seedDealerProfiles) {
-      await setDoc(doc(db, 'dealerProfiles', profile.userId), profile)
-    }
-    for (const spec of seedListingSpecs) {
-      await setDoc(doc(db, 'carfaxReports', spec.carfax.id), spec.carfax)
-    }
-    for (const spec of seedListingSpecs) {
-      const primaryImageId = spec.images.length > 0 ? `img-${spec.listing.id}-0` : null
-      await setDoc(doc(db, 'listings', spec.listing.id), {
-        ...spec.listing,
-        primaryImageId,
-      } satisfies VehicleListing)
-    }
-    for (const image of buildSeedImages()) {
-      await setDoc(doc(db, 'images', image.id), image)
-    }
-    for (const submission of seedTradeSubmissions) {
-      await setDoc(doc(db, 'tradeSubmissions', submission.id), submission)
-    }
-    await setDoc(metaRef, { seeded: true })
+    // No-op against real Firestore. Security rules (deliberately) reject
+    // these writes from client code — seeding a live project only ever
+    // happens once, via the Admin SDK script (`npm run seed:firestore`),
+    // which bypasses rules entirely. The local/IndexedDB provider's
+    // seedIfEmpty is the one that actually runs per-browser.
   },
 }
