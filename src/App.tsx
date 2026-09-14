@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import Responsive from './components/Responsive'
 import DesktopPageShell from './components/DesktopPageShell'
 import ProtectedRoute from './components/ProtectedRoute'
+import DealerRoute from './components/DealerRoute'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
 import Sell from './pages/Sell'
@@ -108,7 +109,7 @@ export default function App() {
         <Route
           path="/dealer"
           element={
-            <ProtectedRoute>
+            <DealerRoute>
               <Responsive
                 mobile={
                   <Layout title="Dealer Console" nav="dealer">
@@ -117,13 +118,13 @@ export default function App() {
                 }
                 desktop={<DealerConsoleDesktop />}
               />
-            </ProtectedRoute>
+            </DealerRoute>
           }
         />
         <Route
           path="/dealer/deals"
           element={
-            <ProtectedRoute>
+            <DealerRoute>
               <Responsive
                 mobile={
                   <Layout title="Deals" nav="dealer">
@@ -132,7 +133,7 @@ export default function App() {
                 }
                 desktop={<DealPipelineDesktop />}
               />
-            </ProtectedRoute>
+            </DealerRoute>
           }
         />
         <Route

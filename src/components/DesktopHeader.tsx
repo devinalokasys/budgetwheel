@@ -11,13 +11,13 @@ interface DesktopHeaderProps {
 const navItems = [
   { key: 'browse', label: 'Browse Inventory', to: '/browse' },
   { key: 'saved', label: 'Saved', to: '/saved' },
-  { key: 'dealer', label: 'Dealer Portal', to: '/dealer' },
+  { key: 'dealer', label: 'Dealer Portal', to: '/dealer', dealerOnly: true },
   { key: 'messages', label: 'Messages', to: '/messages' },
 ] as const
 
 export default function DesktopHeader({ active }: DesktopHeaderProps) {
   const navigate = useNavigate()
-  const { user, signOut } = useAuth()
+  const { user, profile, signOut } = useAuth()
   const [savedCount, setSavedCount] = useState<number | null>(null)
 
   useEffect(() => {
@@ -66,7 +66,9 @@ export default function DesktopHeader({ active }: DesktopHeaderProps) {
         </div>
 
         <nav className="hidden lg:flex items-center gap-space-sm">
-          {navItems.map((item) => (
+          {navItems
+            .filter((item) => !('dealerOnly' in item) || profile?.type === 'dealer')
+            .map((item) => (
             <button
               key={item.key}
               onClick={() => navigate(item.to)}

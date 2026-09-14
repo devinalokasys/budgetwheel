@@ -1,9 +1,14 @@
 import { createContext, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { db } from '../lib/db'
 import type { AuthUser } from '../lib/auth'
+import type { User } from '../lib/db/schema'
 
 export interface AuthContextValue {
   user: AuthUser | null
+  // The app-level profile doc (role, etc.) — separate from `user` because
+  // Firebase Auth only knows identity (uid/name/email/photo), not app
+  // concepts like consumer-vs-dealer. Same loading gate as `user`.
+  profile: User | null
   loading: boolean
   error: string
   signIn: () => Promise<void>
@@ -17,6 +22,7 @@ export const AuthContext = createContext<AuthContextValue | null>(null)
 // the pattern used by the sibling portfolio apps for the same reason.
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
+  const [profile, setProfile] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const provisioned = useRef(new Set<string>())
@@ -30,21 +36,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         unsubscribe = watchAuth(async (nextUser) => {
           setUser(nextUser)
-          setLoading(false)
-          if (nextUser && !provisioned.current.has(nextUser.uid)) {
+          if (!nextUser) {
+            setProfile(null)
+            setLoading(false)
+            return
+          }
+          let userProfile = await db.getUser(nextUser.uid)
+          if (!userProfile && !provisioned.current.has(nextUser.uid)) {
             provisioned.current.add(nextUser.uid)
-            const existing = await db.getUser(nextUser.uid)
-            if (!existing) {
-              await db.putUser({
-                id: nextUser.uid,
-                type: 'consumer',
-                email: nextUser.email ?? '',
-                displayName: nextUser.displayName ?? 'BudgetWheels User',
-                photoUrl: nextUser.photoURL,
-                phone: null,
-                createdAt: Date.now(),
-              })
+            userProfile = {
+              id: nextUser.uid,
+              type: 'consumer',
+              email: nextUser.email ?? '',
+              displayName: nextUser.displayName ?? 'BudgetWheels User',
+              photoUrl: nextUser.photoURL,
+              phone: null,
+              createdAt: Date.now(),
             }
+            await db.putUser(userProfile)
+          }
+          if (!cancelled) {
+            setProfile(userProfile)
+            setLoading(false)
           }
         })
       })
@@ -54,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // forever. Sign-in itself still surfaces a clear error via signIn().
         if (!cancelled) {
           setUser(null)
+          setProfile(null)
           setLoading(false)
         }
       })
@@ -81,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, profile, loading, error, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )

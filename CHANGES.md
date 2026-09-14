@@ -1,5 +1,23 @@
 # Changes
 
+## 0.9.1 — 2026-09-14
+
+Dealer/consumer segregation, at both layers that actually matter:
+
+- **UI**: new `DealerRoute` guard (`/dealer`, `/dealer/deals`) requiring
+  not just sign-in but a dealer-type profile — a signed-in consumer sees
+  a clear "Dealer accounts only" message instead of the console. Desktop
+  header hides the "Dealer Portal" nav link entirely for non-dealers.
+  `AuthContext` now exposes `profile` (the app-level `User` doc with
+  `type`) alongside the Firebase Auth identity, since role isn't
+  something Firebase Auth itself knows about.
+- **Data** (the boundary that actually matters — a route guard alone
+  doesn't stop someone querying Firestore directly): `tradeSubmissions`
+  reads were `if signedIn()` — any consumer's auth token could read
+  every other seller's mileage/asking price/VIN, not just their own.
+  Tightened to the submission's own seller, or a `type == 'dealer'`
+  profile.
+
 ## 0.9.0 — 2026-09-14
 
 Real Firestore backend is live: created the `budgetwheel` Firebase project,

@@ -61,11 +61,15 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Any signed-in user can browse open trade submissions (dealers
-    // bidding, matching the current unrestricted-by-role Deal Pipeline
-    // access) and submit their own. Only the seller updates their own.
+    // Dealers can browse every open submission (that's the Deal Pipeline);
+    // a consumer can only read their own — not browse other sellers'
+    // mileage/asking price/VIN. Any signed-in consumer may still create
+    // one (submitting a trade-in doesn't require being a dealer).
     match /tradeSubmissions/{submissionId} {
-      allow read: if signedIn();
+      allow read: if signedIn() && (
+        resource.data.sellerId == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.type == 'dealer'
+      );
       allow create: if signedIn() && request.resource.data.sellerId == request.auth.uid;
       allow update: if signedIn() && resource.data.sellerId == request.auth.uid;
       allow delete: if false;
