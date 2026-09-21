@@ -1,5 +1,28 @@
 # Changes
 
+## 0.12.0 — 2026-09-21
+
+SEO pass on `index.html`, modeled on mortgage-calculator's SEO setup (the
+site had no meta description, keywords, robots, canonical, OG/Twitter tags,
+or structured data at all before this — just a bare `<title>`):
+
+- Keyword-aligned `<title>` and meta description, grounded in the real hero
+  copy already on the homepage ("Precision Automotive Marketplace... Real-time
+  algorithmic valuation, transparent 100% verified vehicle histories, digital
+  escrow protection, and instant dealer cash buyout guarantees") — no
+  invented claims, and no use of the page's own "45,820 inspected vehicles"
+  stat since it can't be verified as real inventory rather than seed/demo data.
+- Added `meta keywords`, `robots`, canonical link, full OpenGraph/Twitter
+  blocks (using the real `public/images/logo-brand.jpg` asset), and JSON-LD.
+- Added `public/robots.txt` and `public/sitemap.xml` — sitemap lists only `/`
+  and `/browse`, the two routes outside `ProtectedRoute` in `App.tsx`; every
+  other page (dealer console, messages, sell/saved/account) is either
+  auth-gated or a design placeholder.
+- Canonical/OG URLs point at `budgetwheel.web.app` (the real Firebase
+  Hosting default domain, confirmed via `.firebaserc`) since no custom
+  domain is configured yet and the site isn't deployed (still 404s) — these
+  are correct once a deploy actually happens, not a live claim right now.
+
 ## 0.11.0 — 2026-09-21
 
 Code-quality pass plus wiring more of `Messages.tsx` to real data:
