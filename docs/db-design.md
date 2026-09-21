@@ -295,20 +295,23 @@ non-existent Firebase project.
   real Firebase credentials either — so every route behind
   `ProtectedRoute`/`DealerRoute` is currently untestable against local
   IndexedDB dev data; sign-in only works against the real deployed app.
-- **Offer, TradeSubmission**: `Sell.tsx` (`createTradeSubmission`) and
-  `DealPipeline.tsx` (`listTradeSubmissions('open')`, `createOffer`) are
-  wired to real data. `Messages.tsx`'s "My Garage" tab now reads a
-  consumer's own submissions (`listTradeSubmissionsBySeller`) and their
-  bids (`listOffersForTradeSubmission`); its "Saved" tab reuses the
-  `Saved` page. Still static/placeholder: `Messages.tsx`'s "Chat & Leads"
-  tab (needs a real `Conversation`-creation entry point — nothing
-  currently lets a buyer start a conversation with a seller, since there's
-  no listing detail page yet either) and **`DealerConsole.tsx` /
-  `DealerConsoleDesktop.tsx`** (dealer's own inventory, stat tiles,
-  incoming trade bids — all still `data/dealer.ts`/`data/dealerDesktop.ts`
-  mock arrays). The stat tiles in particular (30-day sales volume, lead
-  conversion %) don't have a clean aggregation path over the current
-  schema yet — that's real design work, not just a wiring pass.
+- ~~Offer, TradeSubmission, Conversation/Message not wired to UI~~ — done.
+  `Sell.tsx`/`DealPipeline.tsx`/`ListingDetail.tsx`'s offer form all write
+  real `Offer`/`TradeSubmission` records. `Messages.tsx`'s "My Garage" tab
+  reads a consumer's own submissions + bids; its "Saved" tab reuses the
+  `Saved` page. Its "Chat & Leads" tab now lists real `Conversation`
+  rows, opened via `ConversationThread.tsx` (`/messages/:conversationId`)
+  — entry point is a "Message" button on `ListingDetail.tsx`'s seller
+  card, calling `getOrCreateConversation`. One deliberate gap: no
+  "mark as read" — `unreadCount*` fields exist and are displayed, but
+  nothing resets them on opening a thread.
+- **The one remaining major gap: `DealerConsole.tsx` /
+  `DealerConsoleDesktop.tsx`** — dealer's own inventory, stat tiles,
+  incoming trade bids are still `data/dealer.ts`/`data/dealerDesktop.ts`
+  mock arrays, the last page not reading from `db`. The stat tiles in
+  particular (30-day sales volume, lead conversion %) don't have a clean
+  aggregation path over the current schema yet — that's real design work,
+  not just a wiring pass.
 - **Real Carfax API integration** — `CarfaxReport` is seeded with
   placeholder data shaped like a real report; actually calling Carfax's
   API is out of scope (requires a paid dealer/API agreement).
