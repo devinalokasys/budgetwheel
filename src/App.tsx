@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import DealerRoute from './components/DealerRoute'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
+import ListingDetail from './pages/ListingDetail'
 import Sell from './pages/Sell'
 import Saved from './pages/Saved'
 import Placeholder from './pages/Placeholder'
@@ -47,6 +48,23 @@ export default function App() {
               desktop={
                 <DesktopPageShell active="browse">
                   <Browse />
+                </DesktopPageShell>
+              }
+            />
+          }
+        />
+        <Route
+          path="/listing/:id"
+          element={
+            <Responsive
+              mobile={
+                <Layout title="Vehicle Details" showBack nav="none">
+                  <ListingDetail />
+                </Layout>
+              }
+              desktop={
+                <DesktopPageShell active="browse">
+                  <ListingDetail />
                 </DesktopPageShell>
               }
             />

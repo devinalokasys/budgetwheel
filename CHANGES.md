@@ -1,5 +1,35 @@
 # Changes
 
+## 0.10.0 — 2026-09-21
+
+Added the vehicle detail page (`/listing/:id`) — until now there was no
+way to click into a single listing at all: `BrowseListingCard` and
+`FeaturedDealCard`'s "View Deal" buttons were inert, so browsing only ever
+showed a grid of cards with no way to see the full photo set, the Carfax
+report (already fully modeled in the schema and seed data, but never
+rendered anywhere), or contact a seller.
+
+- `toListingDetailView` in `src/lib/db/mappers.ts`: new mapper alongside
+  the existing card-view ones, pulling every listing image (not just the
+  primary), the full Carfax report, and dealer profile info (rating,
+  address) when the seller is a dealer.
+- `src/pages/ListingDetail.tsx`: image gallery with thumbnail strip, full
+  spec grid, Vehicle History card, description, seller card, and a
+  "Make an Offer" form that calls the already-implemented
+  `db.createOffer` — signed-out visitors are redirected to `/login` on
+  submit, matching `FavoriteButton`'s existing pattern. One responsive
+  component (no separate mobile/desktop file) since there's no bespoke
+  design mockup for this page, same as Browse/Sell/Saved/Messages.
+  Deliberately doesn't show other buyers' offers on the same listing —
+  unlike Deal Pipeline's dealer-facing trade-submission bidding, this is
+  a private negotiation between one buyer and the seller.
+- Wired both card components' "View Deal" buttons to `Link` elements
+  pointing at the new route, rather than making the whole card clickable
+  — `FavoriteButton` doesn't stop event propagation, so wrapping the
+  entire card in a `Link` would have made favoriting also navigate away.
+- Verified end-to-end in a real browser (mobile + desktop viewports, plus
+  the not-found state for a bad id), not just `tsc`/`vite build`.
+
 ## 0.9.2 — 2026-09-21
 
 - **Stopped tracking `.env.production` in git** — GitHub's secret scanning

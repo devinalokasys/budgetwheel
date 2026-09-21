@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Icon from './Icon'
 import FavoriteButton from './FavoriteButton'
 import type { Listing } from '../data/listings'
@@ -61,9 +62,12 @@ export default function FeaturedDealCard({ listing }: { listing: Listing }) {
             </span>
             <span className="font-body-sm text-body-sm text-outline">{listing.priceNote}</span>
           </div>
-          <button className="h-10 px-4 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm rounded-lg flex items-center justify-center hover:brightness-110 active:scale-95 transition-all">
+          <Link
+            to={`/listing/${listing.id}`}
+            className="h-10 px-4 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm rounded-lg flex items-center justify-center hover:brightness-110 active:scale-95 transition-all"
+          >
             View Deal
-          </button>
+          </Link>
         </div>
       </div>
     </div>

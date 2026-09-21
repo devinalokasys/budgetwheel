@@ -4,7 +4,7 @@
 // Keeps those components untouched while the underlying data becomes real.
 
 import { db } from './index'
-import type { VehicleListing } from './schema'
+import type { CarfaxReport, VehicleListing } from './schema'
 import type { BrowseListing, Listing } from '../../data/listings'
 
 function formatUsd(cents: number): string {
@@ -113,6 +113,114 @@ export async function toFeaturedListingView(l: VehicleListing): Promise<Listing>
       { label: 'MILEAGE', value: formatMileageFull(l.mileage) },
       { label: 'CARFAX', value: historyPill.label.split(' • ')[0], icon: historyPill.icon },
     ],
+  }
+}
+
+function formatDate(ms: number): string {
+  return new Date(ms).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+}
+
+const titleStatusLabel: Record<CarfaxReport['titleStatus'], string> = {
+  clean: 'Clean',
+  salvage: 'Salvage',
+  rebuilt: 'Rebuilt',
+  lemon: 'Lemon',
+  flood: 'Flood',
+}
+
+export interface ListingDetailView {
+  id: string
+  vin: string
+  sellerId: string
+  title: string
+  subtitle: string
+  description: string
+  images: string[]
+  location: string
+  dealBadge: { label: string; icon: string; tone: 'secondary' | 'primary' | 'tertiary' }
+  price: string
+  priceNote: string
+  monthlyEstimate: string
+  specs: { label: string; value: string; icon: string }[]
+  seller: {
+    name: string
+    type: 'private' | 'dealer'
+    verifiedLabel: string
+    rating: number | null
+    address: string | null
+  }
+  carfax:
+    | {
+        status: 'available'
+        titleStatus: string
+        ownerCount: number
+        accidentCount: number
+        serviceRecordCount: number
+        lastServiceDate: string | null
+        reportUrl: string | null
+      }
+    | { status: 'pending' }
+}
+
+export async function toListingDetailView(l: VehicleListing): Promise<ListingDetailView> {
+  const [images, seller, carfax, dealerProfile] = await Promise.all([
+    db.listImages('listing', l.id).then((imgs) => Promise.all(imgs.map((img) => db.getImageUrl(img)))),
+    sellerLabel(l),
+    db.getCarfaxReportByVin(l.vin),
+    l.sellerType === 'dealer' ? db.getDealerProfile(l.sellerId) : Promise.resolve(null),
+  ])
+  const badge = computeDealBadge(l)
+  const toneMap = { great: 'secondary', good: 'primary', fair: 'tertiary' } as const
+
+  return {
+    id: l.id,
+    vin: l.vin,
+    sellerId: l.sellerId,
+    title: `${l.year} ${l.make} ${l.model}${l.trim ? ` ${l.trim}` : ''}`,
+    subtitle: [l.condition[0].toUpperCase() + l.condition.slice(1), l.exteriorColor].filter(Boolean).join(' • '),
+    description: l.description,
+    images: images.length > 0 ? images : ['/images/logo-brand.jpg'],
+    location: `${l.location.city}, ${l.location.state} ${l.location.zip}`,
+    dealBadge: {
+      label: badge.priceDeltaLabel ? `${badge.label} ${badge.priceDeltaLabel}` : badge.label,
+      icon: badge.icon,
+      tone: toneMap[badge.tone],
+    },
+    price: formatUsd(l.priceCents),
+    priceNote: l.marketAvgCents != null ? `Market avg ${formatUsd(l.marketAvgCents)}` : '',
+    monthlyEstimate: l.monthlyEstimateCents
+      ? `Est. ${formatUsd(l.monthlyEstimateCents)}/mo • 72 mo term`
+      : '',
+    specs: [
+      { label: 'Mileage', value: formatMileageFull(l.mileage), icon: 'speed' },
+      { label: 'Body Type', value: l.bodyType.toUpperCase(), icon: 'directions_car' },
+      { label: 'Transmission', value: l.transmission ?? '—', icon: 'settings' },
+      { label: 'Drivetrain', value: l.drivetrain ?? '—', icon: 'route' },
+      { label: 'Engine', value: l.engine ?? '—', icon: 'bolt' },
+      { label: '0-60 mph', value: l.zeroToSixtySec ? `${l.zeroToSixtySec}s` : '—', icon: 'timer' },
+      { label: 'Exterior', value: l.exteriorColor ?? '—', icon: 'palette' },
+      { label: 'VIN', value: l.vin, icon: 'tag' },
+    ],
+    seller: {
+      name: seller.name,
+      type: l.sellerType,
+      verifiedLabel: seller.verified,
+      rating: dealerProfile?.rating ?? null,
+      address: dealerProfile
+        ? `${dealerProfile.address.city}, ${dealerProfile.address.state}`
+        : null,
+    },
+    carfax: carfax
+      ? {
+          status: 'available',
+          titleStatus: titleStatusLabel[carfax.titleStatus],
+          ownerCount: carfax.ownerCount,
+          accidentCount: carfax.accidentCount,
+          serviceRecordCount: carfax.serviceRecordCount,
+          lastServiceDate: carfax.lastServiceDate ? formatDate(carfax.lastServiceDate) : null,
+          reportUrl: carfax.externalReportUrl,
+        }
+      : { status: 'pending' },
   }
 }
 

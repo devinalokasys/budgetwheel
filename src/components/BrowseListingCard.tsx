@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Icon from './Icon'
 import FavoriteButton from './FavoriteButton'
 import type { BrowseListing } from '../data/listings'
@@ -80,10 +81,13 @@ export default function BrowseListingCard({ listing }: { listing: BrowseListing 
               {listing.monthlyEstimate}
             </p>
           </div>
-          <button className="px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-headline-sm text-label-md font-semibold shadow-md hover:bg-primary transition-all flex items-center gap-1">
+          <Link
+            to={`/listing/${listing.id}`}
+            className="px-4 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-headline-sm text-label-md font-semibold shadow-md hover:bg-primary transition-all flex items-center gap-1"
+          >
             <span>View Deal</span>
             <Icon name="arrow_forward" className="text-[16px]" />
-          </button>
+          </Link>
         </div>
       </div>
     </article>
