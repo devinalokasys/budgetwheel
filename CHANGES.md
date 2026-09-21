@@ -1,5 +1,53 @@
 # Changes
 
+## 0.11.0 — 2026-09-21
+
+Code-quality pass plus wiring more of `Messages.tsx` to real data:
+
+- **Bug fix**: `DealPipeline.tsx`'s `SubmissionCard` took `dealerId={user?.uid
+  ?? ''}` — dead defensive code, since this page is only reachable through
+  `DealerRoute`, which already guarantees a signed-in dealer. The practical
+  failure mode wasn't data corruption (`firestore.rules`' `offers` create
+  rule requires `fromUserId == request.auth.uid`, so an empty string would
+  get rejected) but a silent one: the write throws, `submitOffer` never
+  reaches `setStatus('sent')`, and the button is stuck on "Sending…" with
+  no visible error. Now uses `user!.uid` directly and trusts the route
+  guarantee, per the "no defensive handling for scenarios that can't
+  happen" rule — a real crash if that guarantee is ever actually violated
+  beats a silent stuck button.
+- **`Messages.tsx`**: "My Garage" now shows the signed-in user's actual
+  trade submission (`listTradeSubmissionsBySeller`, new provider method —
+  needed because an unfiltered `listTradeSubmissions()` only works for a
+  dealer under `firestore.rules`, not a consumer reading their own) with
+  real dealer bids (`listOffersForTradeSubmission`, also new) instead of a
+  hardcoded "2021 Toyota Camry SE" example. Deliberately dropped the
+  original mockup's Views/Saves counts rather than inventing fake numbers
+  for them — those are `VehicleListing` concepts (public marketplace
+  browsing) that don't apply to a `TradeSubmission` (dealer-only, via Deal
+  Pipeline), so faking them would just swap one kind of fake data for
+  another. "Saved" tab now reuses the real `Saved` page instead of a
+  `Placeholder`, and its tab label shows a real count instead of a
+  hardcoded `(6)`. "Chat & Leads" stays a placeholder — real messaging
+  needs a way to start a `Conversation` from a listing, which doesn't
+  exist yet (no "message seller" entry point on the new listing detail
+  page either).
+- Refreshed `docs/db-design.md`'s "Not yet done" section, most of which
+  had gone stale since 0.3.0 (claimed no Firebase Auth existed — it's
+  fully wired since 0.8.0) — now accurately lists the real remaining gaps:
+  `DealerConsole`/`DealerConsoleDesktop` still fully static (including
+  stat tiles that don't have a clean aggregation path over the current
+  schema yet, not just a wiring gap), Chat & Leads, and the lack of a
+  Firebase Auth emulator for local dev (every `ProtectedRoute`/
+  `DealerRoute` page is currently untestable against local IndexedDB data
+  — sign-in only works against the real deployed app).
+- Verified: full rebuild + lint clean. Confirmed via Playwright that
+  `/messages` and `/dealer/deals` still correctly redirect to `/login`
+  signed-out with zero console errors; couldn't exercise the actual
+  signed-in "My Garage" view end-to-end for the reason above (no local
+  Auth credentials) — reasoned through the data-fetching logic and rules
+  interaction carefully instead, same limitation 0.8.0 already noted for
+  testing auth locally.
+
 ## 0.10.0 — 2026-09-21
 
 Added the vehicle detail page (`/listing/:id`) — until now there was no

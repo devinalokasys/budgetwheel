@@ -70,9 +70,15 @@ export interface DataProvider {
   listMessages(conversationId: string): Promise<Message[]>
   sendMessage(message: Message): Promise<void>
 
-  // Offers / trade submissions — schema-only, not yet wired to UI
+  // Offers / trade submissions
   listOffersForListing(listingId: string): Promise<Offer[]>
+  listOffersForTradeSubmission(tradeSubmissionId: string): Promise<Offer[]>
+  // Status-filtered, dealer-facing (Deal Pipeline) — an unfiltered call
+  // only works for a dealer under firestore.rules, since a plain consumer
+  // can't prove every matching doc is theirs. Use
+  // listTradeSubmissionsBySeller for a consumer's own submissions.
   listTradeSubmissions(status?: TradeSubmission['status']): Promise<TradeSubmission[]>
+  listTradeSubmissionsBySeller(sellerId: string): Promise<TradeSubmission[]>
   createTradeSubmission(submission: TradeSubmission): Promise<void>
   createOffer(offer: Offer): Promise<void>
 

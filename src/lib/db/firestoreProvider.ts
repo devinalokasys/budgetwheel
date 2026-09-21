@@ -225,11 +225,37 @@ export const firestoreProvider: DataProvider = {
     return snap.docs.map((d) => d.data() as any)
   },
 
+  async listOffersForTradeSubmission(tradeSubmissionId) {
+    const db = getFirestoreDb()
+    // Every offer on a given tradeSubmissionId has toUserId == that
+    // submission's sellerId by construction (see DealPipeline.tsx's
+    // createOffer call) — so this query only ever returns docs where the
+    // caller is the recipient, which is exactly what firestore.rules'
+    // offers read rule requires. A dealer calling this for someone else's
+    // submission gets a permission-denied, same as querying it directly.
+    const snap = await getDocs(
+      query(collection(db, 'offers'), where('tradeSubmissionId', '==', tradeSubmissionId)),
+    )
+    return snap.docs
+      .map((d) => d.data() as any)
+      .sort((a, b) => b.createdAt - a.createdAt)
+  },
+
   async listTradeSubmissions(status) {
     const db = getFirestoreDb()
     const clauses = status ? [where('status', '==', status)] : []
     const snap = await getDocs(query(collection(db, 'tradeSubmissions'), ...clauses))
     return snap.docs.map((d) => d.data() as any)
+  },
+
+  async listTradeSubmissionsBySeller(sellerId) {
+    const db = getFirestoreDb()
+    const snap = await getDocs(
+      query(collection(db, 'tradeSubmissions'), where('sellerId', '==', sellerId)),
+    )
+    return snap.docs
+      .map((d) => d.data() as any)
+      .sort((a, b) => b.createdAt - a.createdAt)
   },
 
   async createTradeSubmission(submission) {

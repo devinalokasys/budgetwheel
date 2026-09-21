@@ -288,17 +288,27 @@ non-existent Firebase project.
 - ~~No Firebase project exists for budgetwheel yet~~ — done: `firebase.json`,
   `.firebaserc`, and `firestore.rules` now exist, and `.env.production`
   (gitignored, not tracked) has the real project's config values.
-- **Messages, Offer, TradeSubmission** are fully typed and have local +
-  Firestore provider methods, but `Messages.tsx` and `DealerConsole.tsx`
-  still render their existing static/placeholder content rather than
-  reading from `db` — wiring those up is a separate pass. `Home.tsx` and
-  `Browse.tsx` were wired up in this pass (see below) since they're the
-  more stable, "loading data" surfaces this task was about.
+- ~~No Firebase Auth wiring~~ — done (real Google Sign-In, `User.id` is
+  the Firebase Auth UID). One real gap this leaves: there's no Auth
+  emulator set up for this app (unlike chess-master/mortgage-calculator's
+  `VITE_USE_EMULATORS` pattern), and local dev has no `.env.local` with
+  real Firebase credentials either — so every route behind
+  `ProtectedRoute`/`DealerRoute` is currently untestable against local
+  IndexedDB dev data; sign-in only works against the real deployed app.
+- **Offer, TradeSubmission**: `Sell.tsx` (`createTradeSubmission`) and
+  `DealPipeline.tsx` (`listTradeSubmissions('open')`, `createOffer`) are
+  wired to real data. `Messages.tsx`'s "My Garage" tab now reads a
+  consumer's own submissions (`listTradeSubmissionsBySeller`) and their
+  bids (`listOffersForTradeSubmission`); its "Saved" tab reuses the
+  `Saved` page. Still static/placeholder: `Messages.tsx`'s "Chat & Leads"
+  tab (needs a real `Conversation`-creation entry point — nothing
+  currently lets a buyer start a conversation with a seller, since there's
+  no listing detail page yet either) and **`DealerConsole.tsx` /
+  `DealerConsoleDesktop.tsx`** (dealer's own inventory, stat tiles,
+  incoming trade bids — all still `data/dealer.ts`/`data/dealerDesktop.ts`
+  mock arrays). The stat tiles in particular (30-day sales volume, lead
+  conversion %) don't have a clean aggregation path over the current
+  schema yet — that's real design work, not just a wiring pass.
 - **Real Carfax API integration** — `CarfaxReport` is seeded with
   placeholder data shaped like a real report; actually calling Carfax's
   API is out of scope (requires a paid dealer/API agreement).
-- **No Firebase Auth wiring** — `User.id` is a random local UUID in local
-  mode; in Firestore mode it's meant to be the Firebase Auth UID, but no
-  login flow exists in this app yet (see the portfolio-wide auth pattern
-  in chess-master/mortgage-calculator's `src/lib/auth.ts` for the
-  established convention to follow).

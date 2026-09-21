@@ -128,7 +128,14 @@ function SubmissionCard({ submission, dealerId }: { submission: TradeSubmission;
 }
 
 export default function DealPipeline() {
+  // Non-null by the time this renders — this page is only reachable
+  // through DealerRoute, which redirects to /login otherwise. Falling
+  // back to '' here would let a broken submission through the UI (rules
+  // reject an empty fromUserId, so the write throws and the button gets
+  // stuck on "Sending…" with no visible error) instead of the crash a
+  // genuinely-impossible null would deserve.
   const { user } = useAuth()
+  const dealerId = user!.uid
   const [submissions, setSubmissions] = useState<TradeSubmission[] | null>(null)
 
   useEffect(() => {
@@ -169,7 +176,7 @@ export default function DealPipeline() {
       ) : (
         <div className="flex flex-col gap-space-sm">
           {submissions.map((submission) => (
-            <SubmissionCard key={submission.id} submission={submission} dealerId={user?.uid ?? ''} />
+            <SubmissionCard key={submission.id} submission={submission} dealerId={dealerId} />
           ))}
         </div>
       )}

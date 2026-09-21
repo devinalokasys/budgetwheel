@@ -255,10 +255,26 @@ export const localProvider: DataProvider = {
     return db.getAllFromIndex('offers', 'listingId', listingId)
   },
 
+  async listOffersForTradeSubmission(tradeSubmissionId) {
+    const db = await getDb()
+    const all = await db.getAll('offers')
+    return all
+      .filter((o) => o.tradeSubmissionId === tradeSubmissionId)
+      .sort((a, b) => b.createdAt - a.createdAt)
+  },
+
   async listTradeSubmissions(status) {
     const db = await getDb()
     const all = await db.getAll('tradeSubmissions')
     return status ? all.filter((t) => t.status === status) : all
+  },
+
+  async listTradeSubmissionsBySeller(sellerId) {
+    const db = await getDb()
+    const all = await db.getAll('tradeSubmissions')
+    return all
+      .filter((t) => t.sellerId === sellerId)
+      .sort((a, b) => b.createdAt - a.createdAt)
   },
 
   async createTradeSubmission(submission) {
