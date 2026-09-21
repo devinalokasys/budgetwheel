@@ -228,7 +228,28 @@ export const localProvider: DataProvider = {
   async listConversations(userId) {
     const db = await getDb()
     const all = await db.getAll('conversations')
-    return all.filter((c) => c.buyerId === userId || c.sellerId === userId)
+    return all
+      .filter((c) => c.buyerId === userId || c.sellerId === userId)
+      .sort((a, b) => b.lastMessageAt - a.lastMessageAt)
+  },
+
+  async getOrCreateConversation(listingId, buyerId, sellerId) {
+    const db = await getDb()
+    const all = await db.getAll('conversations')
+    const existing = all.find((c) => c.listingId === listingId && c.buyerId === buyerId)
+    if (existing) return existing
+    const conversation = {
+      id: newId('conv'),
+      listingId,
+      buyerId,
+      sellerId,
+      lastMessageAt: Date.now(),
+      lastMessagePreview: '',
+      unreadCountBuyer: 0,
+      unreadCountSeller: 0,
+    }
+    await db.put('conversations', conversation)
+    return conversation
   },
 
   async listMessages(conversationId) {

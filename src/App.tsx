@@ -15,6 +15,7 @@ import DealerConsoleDesktop from './pages/DealerConsoleDesktop'
 import DealPipeline from './pages/DealPipeline'
 import DealPipelineDesktop from './pages/DealPipelineDesktop'
 import Messages from './pages/Messages'
+import ConversationThread from './pages/ConversationThread'
 import AccountDesktop from './pages/AccountDesktop'
 import HomeDesktop from './pages/HomeDesktop'
 import Login from './pages/Login'
@@ -167,6 +168,25 @@ export default function App() {
                 desktop={
                   <DesktopPageShell active="messages">
                     <Messages />
+                  </DesktopPageShell>
+                }
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messages/:conversationId"
+          element={
+            <ProtectedRoute>
+              <Responsive
+                mobile={
+                  <Layout title="Chat" showBack nav="none">
+                    <ConversationThread />
+                  </Layout>
+                }
+                desktop={
+                  <DesktopPageShell active="messages">
+                    <ConversationThread />
                   </DesktopPageShell>
                 }
               />

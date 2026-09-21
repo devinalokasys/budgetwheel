@@ -194,7 +194,31 @@ export const firestoreProvider: DataProvider = {
     ])
     const byId = new Map<string, any>()
     for (const d of [...asBuyer.docs, ...asSeller.docs]) byId.set(d.id, d.data())
-    return [...byId.values()]
+    return [...byId.values()].sort((a, b) => b.lastMessageAt - a.lastMessageAt)
+  },
+
+  async getOrCreateConversation(listingId, buyerId, sellerId) {
+    const db = getFirestoreDb()
+    const snap = await getDocs(
+      query(
+        collection(db, 'conversations'),
+        where('listingId', '==', listingId),
+        where('buyerId', '==', buyerId),
+      ),
+    )
+    if (!snap.empty) return snap.docs[0].data() as any
+    const conversation = {
+      id: newId('conv'),
+      listingId,
+      buyerId,
+      sellerId,
+      lastMessageAt: Date.now(),
+      lastMessagePreview: '',
+      unreadCountBuyer: 0,
+      unreadCountSeller: 0,
+    }
+    await setDoc(doc(db, 'conversations', conversation.id), conversation)
+    return conversation
   },
 
   async listMessages(conversationId) {

@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../components/Icon'
-import Placeholder from './Placeholder'
 import Saved from './Saved'
 import { db } from '../lib/db'
 import { useAuth } from '../hooks/useAuth'
-import type { DealerProfile, Offer, TradeSubmission } from '../lib/db/schema'
+import type { Conversation, DealerProfile, Offer, TradeSubmission } from '../lib/db/schema'
 
 const tabs = [
   { id: 'garage', label: 'My Garage', icon: 'directions_car' },
-  { id: 'inquiries', label: 'Chat & Leads', icon: 'chat_bubble', dot: true },
+  { id: 'inquiries', label: 'Chat & Leads', icon: 'chat_bubble' },
   { id: 'saved', label: 'Saved', icon: 'bookmark' },
 ] as const
 
@@ -150,16 +149,113 @@ function MyGarage() {
   )
 }
 
+interface ConversationRow {
+  conversation: Conversation
+  listingTitle: string
+  otherPartyName: string
+  unread: number
+}
+
+function ChatAndLeads() {
+  const { user } = useAuth()
+  const [rows, setRows] = useState<ConversationRow[] | null>(null)
+
+  useEffect(() => {
+    if (!user) return
+    let cancelled = false
+    async function load() {
+      const conversations = await db.listConversations(user!.uid)
+      const enriched = await Promise.all(
+        conversations.map(async (conversation): Promise<ConversationRow> => {
+          const iAmBuyer = conversation.buyerId === user!.uid
+          const otherId = iAmBuyer ? conversation.sellerId : conversation.buyerId
+          const [listing, dealer, otherUser] = await Promise.all([
+            db.getListing(conversation.listingId),
+            db.getDealerProfile(otherId),
+            db.getUser(otherId),
+          ])
+          return {
+            conversation,
+            listingTitle: listing ? `${listing.year} ${listing.make} ${listing.model}` : 'a listing',
+            otherPartyName: dealer?.businessName ?? otherUser?.displayName ?? 'Unknown',
+            unread: iAmBuyer ? conversation.unreadCountBuyer : conversation.unreadCountSeller,
+          }
+        }),
+      )
+      if (!cancelled) setRows(enriched)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [user])
+
+  if (rows === null) return null
+
+  if (rows.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-space-sm px-space-md py-space-xl text-center min-h-[40vh]">
+        <div className="w-14 h-14 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+          <Icon name="chat_bubble" className="text-[28px]" />
+        </div>
+        <h2 className="font-headline-sm text-headline-sm text-on-surface">No conversations yet</h2>
+        <p className="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
+          Message a seller from any listing and it'll show up here.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-space-xs px-gutter-sm pb-space-xl">
+      {rows.map(({ conversation, listingTitle, otherPartyName, unread }) => (
+        <Link
+          key={conversation.id}
+          to={`/messages/${conversation.id}`}
+          className="flex items-center gap-space-sm bg-surface-container-low rounded-xl p-space-sm shadow-sm"
+        >
+          <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant shrink-0">
+            <Icon name="person" className="text-[20px]" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-space-xs">
+              <span className="font-label-md text-label-md text-on-surface truncate">
+                {otherPartyName}
+              </span>
+              {unread > 0 && (
+                <span className="w-2 h-2 rounded-full bg-primary shrink-0" aria-label="Unread" />
+              )}
+            </div>
+            <p className="font-body-sm text-body-sm text-on-surface-variant truncate">
+              Re: {listingTitle}
+              {conversation.lastMessagePreview ? ` — ${conversation.lastMessagePreview}` : ''}
+            </p>
+          </div>
+          <Icon name="chevron_right" className="text-outline text-[18px] shrink-0" />
+        </Link>
+      ))}
+    </div>
+  )
+}
+
 export default function Messages() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]['id']>('garage')
   const { user } = useAuth()
   const [savedCount, setSavedCount] = useState<number | null>(null)
+  const [hasUnread, setHasUnread] = useState(false)
 
   useEffect(() => {
     if (!user) return
     let cancelled = false
     db.listSavedListings(user.uid).then((rows) => {
       if (!cancelled) setSavedCount(rows.length)
+    })
+    db.listConversations(user.uid).then((conversations) => {
+      if (cancelled) return
+      const unread = conversations.some((c) =>
+        c.buyerId === user.uid ? c.unreadCountBuyer > 0 : c.unreadCountSeller > 0,
+      )
+      setHasUnread(unread)
     })
     return () => {
       cancelled = true
@@ -185,7 +281,7 @@ export default function Messages() {
                 {tab.label}
                 {tab.id === 'saved' && savedCount != null ? ` (${savedCount})` : ''}
               </span>
-              {'dot' in tab && tab.dot && (
+              {tab.id === 'inquiries' && hasUnread && (
                 <span className="w-2 h-2 rounded-full bg-primary inline-block" />
               )}
             </button>
@@ -194,7 +290,7 @@ export default function Messages() {
       </div>
 
       {activeTab === 'garage' && <MyGarage />}
-      {activeTab === 'inquiries' && <Placeholder icon="chat_bubble" title="Chat & Leads" />}
+      {activeTab === 'inquiries' && <ChatAndLeads />}
       {activeTab === 'saved' && <Saved />}
     </div>
   )

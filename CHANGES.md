@@ -1,5 +1,40 @@
 # Changes
 
+## 0.14.0 — 2026-09-21
+
+Real buyer/seller messaging — the last major gap from `docs/db-design.md`'s
+"Not yet done" list. `Conversation`/`Message` have been fully modeled in
+the schema and both `DataProvider` backends since 0.3.0 but had zero UI
+anywhere; `Messages.tsx`'s "Chat & Leads" tab was still a `Placeholder`.
+
+- Two new provider methods: `getOrCreateConversation(listingId, buyerId,
+  sellerId)` (reuses an existing thread for the same buyer+listing instead
+  of spawning duplicates on repeat clicks) on both backends.
+- New "Message" button on the vehicle detail page's seller card — the
+  first real entry point into messaging anywhere in the app. Signed-out
+  click redirects to `/login`, matching `FavoriteButton`'s and the offer
+  form's existing pattern.
+- New `ConversationThread.tsx` (`/messages/:conversationId`, behind
+  `ProtectedRoute`): message bubbles, a pinned listing snippet linking back
+  to the vehicle, and a compose box wired to `db.sendMessage`.
+- `Messages.tsx`'s "Chat & Leads" tab now lists real conversations
+  (`db.listConversations`), each row showing the other party's name, the
+  listing it's about, and the last message preview — tapping one opens the
+  thread. The tab's unread dot now reflects real `unreadCountBuyer`/
+  `unreadCountSeller` values instead of always being on.
+- **Not done**: no "mark as read" — `unreadCount*` fields exist and are
+  read, but nothing resets them when a thread is opened, so the dot can
+  stay lit after reading. Scoped out deliberately rather than adding an
+  `updateConversation` method for a half-considered read-receipt design;
+  a real follow-up, not an oversight.
+- Verified: full rebuild + lint clean. Playwright-confirmed `/browse` →
+  real listing detail page → "Message" button renders and (signed-out)
+  correctly redirects to `/login` on click with zero console errors, and
+  that both `/messages` and the new `/messages/:conversationId` route
+  redirect signed-out visitors to `/login`. Couldn't exercise an actual
+  signed-in conversation thread for the same reason noted in 0.11.0 (no
+  local Firebase Auth credentials in this dev environment).
+
 ## 0.13.0 — 2026-09-21
 
 Phase 4 of the deploy plan: `.github/workflows/deploy.yml`, a manual

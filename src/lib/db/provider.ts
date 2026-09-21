@@ -65,8 +65,12 @@ export interface DataProvider {
   listSavedSearches(userId: string): Promise<SavedSearch[]>
   putSavedSearch(search: SavedSearch): Promise<void>
 
-  // Conversations/messages — schema-only, not yet wired to UI
+  // Conversations/messages
   listConversations(userId: string): Promise<Conversation[]>
+  // Returns the existing buyer/listing conversation if one exists, else
+  // creates it — so re-messaging the same seller about the same listing
+  // reuses one thread instead of spawning duplicates.
+  getOrCreateConversation(listingId: string, buyerId: string, sellerId: string): Promise<Conversation>
   listMessages(conversationId: string): Promise<Message[]>
   sendMessage(message: Message): Promise<void>
 

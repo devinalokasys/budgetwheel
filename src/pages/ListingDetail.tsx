@@ -25,6 +25,7 @@ export default function ListingDetail() {
   const [offerMessage, setOfferMessage] = useState('')
   const [offerSubmitting, setOfferSubmitting] = useState(false)
   const [offerSent, setOfferSent] = useState(false)
+  const [messaging, setMessaging] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -45,6 +46,17 @@ export default function ListingDetail() {
       cancelled = true
     }
   }, [id])
+
+  async function handleMessageSeller() {
+    if (!listing) return
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    setMessaging(true)
+    const conversation = await db.getOrCreateConversation(listing.id, user.uid, listing.sellerId)
+    navigate(`/messages/${conversation.id}`)
+  }
 
   async function handleOfferSubmit(e: FormEvent) {
     e.preventDefault()
@@ -265,6 +277,14 @@ export default function ListingDetail() {
               <p className="font-body-sm text-body-sm text-on-surface-variant">{listing.seller.address}</p>
             )}
           </div>
+          <button
+            onClick={handleMessageSeller}
+            disabled={messaging}
+            className="shrink-0 h-10 px-4 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-space-xs hover:bg-surface-bright transition-colors disabled:opacity-60"
+          >
+            <Icon name="chat_bubble" className="text-[16px]" />
+            Message
+          </button>
         </div>
 
         {/* Make an offer */}
