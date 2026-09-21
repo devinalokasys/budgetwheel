@@ -1,0 +1,29 @@
+name: Deploy to Firebase Hosting
+on: workflow_dispatch   # manual only — deliberate click, not a side effect of pushing to main
+permissions: { contents: read }
+concurrency: { group: firebase-hosting-deploy, cancel-in-progress: false }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+        env:
+          # Public Firebase web client config, not secrets — same values
+          # already committed to .env.production's history and documented
+          # as non-sensitive throughout this repo (real access control is
+          # firestore.rules, not these identifiers).
+          VITE_DATA_PROVIDER: firestore
+          VITE_FIREBASE_PROJECT_ID: budgetwheel
+          VITE_FIREBASE_APP_ID: "1:94400376803:web:4022d9c6eeae0f3fa13ad6"
+          VITE_FIREBASE_STORAGE_BUCKET: budgetwheel.firebasestorage.app
+          VITE_FIREBASE_API_KEY: AIzaSyDY7JvtHfGmvZJyiGL3y9ooHhH6O9cM9RQ
+          VITE_FIREBASE_AUTH_DOMAIN: budgetwheel.firebaseapp.com
+          VITE_FIREBASE_MESSAGING_SENDER_ID: "94400376803"
+      - uses: google-github-actions/auth@v2
+        with: { credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" }
+      - run: npx firebase-tools deploy --only hosting --project budgetwheel --non-interactive

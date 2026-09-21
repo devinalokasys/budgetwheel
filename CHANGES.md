@@ -1,5 +1,32 @@
 # Changes
 
+## 0.13.0 — 2026-09-21
+
+Phase 4 of the deploy plan: `.github/workflows/deploy.yml`, a manual
+(`workflow_dispatch`-only, matching the sibling repos' actual practice —
+no auto-deploy on push) GitHub Actions workflow that builds and deploys
+to Firebase Hosting. Needed because the local `firebase` CLI reliably gets
+killed (SIGKILL) on any Firestore- or deploy-related subcommand on this
+machine — reproduced identically in both my sandboxed tool environment
+and the user's own regular terminal, which rules out a sandboxing
+restriction and points at something systemic to the local CLI/network
+path instead (available RAM isn't the constraint — confirmed 48GB total).
+Moving the actual deploy to GitHub's runners sidesteps it entirely, and
+is the more correct long-term home for this anyway.
+
+Bakes the six `VITE_FIREBASE_*` values directly into the workflow's build
+step rather than requiring them as GitHub secrets — they're the public
+Firebase web client config already committed in this repo's history and
+documented throughout as non-sensitive (real access control is
+`firestore.rules`). The one genuine secret, `FIREBASE_SERVICE_ACCOUNT`,
+still needs to be set as a GitHub Actions secret before the workflow can
+run — attempted via `gh secret set` but blocked by Claude Code's own
+auto-mode safety classifier (writing to a secret store), so that one step
+needs a human: `gh secret set FIREBASE_SERVICE_ACCOUNT --repo
+devinalokasys/budgetwheel < serviceAccountKey.json`, or paste the same
+file's contents into Settings → Secrets and variables → Actions in the
+GitHub UI.
+
 ## 0.12.0 — 2026-09-21
 
 SEO pass on `index.html`, modeled on mortgage-calculator's SEO setup (the
