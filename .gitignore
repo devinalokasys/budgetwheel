@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Real env files carry live Firebase config values — never commit them.
+# .env.example stays tracked as the (blank-valued) template.
+.env
+.env.production
+.env.production.local
+.env.development.local
+
 # Firebase Admin SDK service account keys — real secrets, never commit.
 serviceAccountKey*.json
 

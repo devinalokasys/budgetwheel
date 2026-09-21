@@ -1,5 +1,29 @@
 # Changes
 
+## 0.9.2 — 2026-09-21
+
+- **Stopped tracking `.env.production` in git** — GitHub's secret scanning
+  flagged its `VITE_FIREBASE_API_KEY` (commit `df07865`, "Stand up the real
+  Firestore backend"). `.gitignore` never excluded real `.env*` files, only
+  `.env.example`'s own comment already documented the intent ("like every
+  sibling repo's Firebase web config, these are public client identifiers
+  once real, not secrets") — so this was a tracking gap, not a design
+  decision reversal. The key itself isn't a traditional secret (Firebase
+  web config is meant to ship in the client bundle; real access control is
+  `firestore.rules`, already correctly scoped — everything private requires
+  `signedIn()` + ownership, nothing is a blanket `allow read, write: if
+  true`), but committing the real-values file was still sloppy and the
+  pattern is worth closing regardless of this key's actual blast radius.
+  `git rm --cached` only — the file stays on disk so local builds keep
+  working. Also fixed `docs/db-design.md`'s stale "no Firebase project
+  exists yet" note, left over from before this same commit stood one up.
+  **Follow-up for a human, not done here:** consider adding an HTTP-referrer
+  restriction to this API key in Google Cloud Console as defense-in-depth,
+  and optionally purging it from the 12-commit git history with
+  `git filter-repo` + a force-push if you want it gone from `df07865`
+  entirely (both are hardening, not required — the rules are what actually
+  gate the data).
+
 ## 0.9.1 — 2026-09-14
 
 Dealer/consumer segregation, at both layers that actually matter:

@@ -285,11 +285,9 @@ non-existent Firebase project.
 
 ## Not yet done (follow-up work, not part of this pass)
 
-- **No Firebase project exists for budgetwheel yet** (no `firebase.json`,
-  no `.firebaserc`, unlike every sibling app in the portfolio). The
-  Firestore provider is fully implemented against this schema but is
-  untested against a real project — wiring one up (Firestore + Storage,
-  security rules, `.env` values) is a separate task.
+- ~~No Firebase project exists for budgetwheel yet~~ — done: `firebase.json`,
+  `.firebaserc`, and `firestore.rules` now exist, and `.env.production`
+  (gitignored, not tracked) has the real project's config values.
 - **Messages, Offer, TradeSubmission** are fully typed and have local +
   Firestore provider methods, but `Messages.tsx` and `DealerConsole.tsx`
   still render their existing static/placeholder content rather than
