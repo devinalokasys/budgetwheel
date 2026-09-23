@@ -1,5 +1,27 @@
 # Changes
 
+## 0.15.1 — 2026-09-23
+
+Continued the trust-copy repositioning (0.15.0) onto Dealer Console and
+Account pages — the two remaining surfaces with literal Carfax brand
+references, deferred from that change as lower priority.
+
+- `src/data/dealer.ts`: trade-bid tag `'Carfax 0 Acc'` → `'0 Accidents'`.
+- `src/data/accountDesktop.ts`: `healthCheck: 'Clean Carfax'` → `'Clean
+  Title'`; `'Carfax Synced 100%'` → `'Verified'`; document label `'2
+  Carfax Reports Synced'` → `'2 Vehicle History Reports'`.
+- Verified: rebuild + lint clean, no other files touched.
+- **Not done, flagged separately**: while in `AccountDesktop.tsx` this
+  surfaced a bigger issue than brand naming — a whole "Escrow" section
+  claims funds are "held by BudgetWheels Trust Bank N.A." with a
+  fictional deal ID, a document row claims "Verified by Stripe Identity",
+  and pricing/buyout copy claims a binding "algorithm floor" and
+  guaranteed dealer buyouts. None of these back onto a real feature
+  (no escrow/trust-banking integration, no Stripe integration, no
+  pricing algorithm). This is a bigger scope than a copy tweak — it's a
+  fabricated capability narrative across a whole page section — so it
+  was left as-is pending explicit direction rather than silently gutted.
+
 ## 0.15.0 — 2026-09-23
 
 Repositioned the Home page's marketing copy around what the app actually

@@ -70,7 +70,7 @@ export const tradeBids: TradeBid[] = [
     meta: '32,150 mi • Pearl White • Portland, OR',
     asking: '$25,900',
     tags: [
-      { label: 'Carfax 0 Acc', tone: 'secondary', icon: 'verified' },
+      { label: '0 Accidents', tone: 'secondary', icon: 'verified' },
       { label: '14h remaining', tone: 'neutral' },
     ],
     kbb: '$24,800',
