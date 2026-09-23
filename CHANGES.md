@@ -1,5 +1,39 @@
 # Changes
 
+## 0.15.0 — 2026-09-23
+
+Repositioned the Home page's marketing copy around what the app actually
+does, after a market/strategy review flagged that the "Precision Market
+Engine" algorithmic-pricing framing overpromises versus a cold-start
+marketplace, and that the trust surface had a real bug: every dealer-type
+seller was shown as "Verified Dealer" regardless of the underlying
+`DealerProfile.verified` flag.
+
+- **Real bug fix**: `sellerLabel()` in `src/lib/db/mappers.ts` now reads
+  `dealer?.verified` instead of hardcoding "Verified Dealer" for any
+  dealer-type seller. A dealer whose license hasn't been checked (the
+  default for a new dealer account) now correctly shows "Unverified
+  Dealer". Propagates automatically to `BrowseListingCard`,
+  `FeaturedDealCard`, and `ListingDetail` via the existing
+  `verifiedLabel` field — no other files needed changes.
+- Removed fabricated claims from `Home.tsx`, `HomeDesktop.tsx`, and
+  `src/data/homeDesktop.ts`: fake Carfax branding ("Clean CARFAX",
+  "Instant Carfax valuation" — Carfax is a third-party trademark this app
+  has no relationship with), a fake "Verified Escrow" location tag (no
+  escrow service exists), a fake VIN-decode/instant-cash-offer widget
+  with a fabricated "$24,800 average buyout", and fake live inventory
+  numbers ("45,820 Vehicles", "18,420 Active Units", "150k+ Cars Sold",
+  "100% Escrow Wire") that don't reflect the app's actual seed-data scale.
+- Rewrote the hero, search console, Buy/Sell panels, and telemetry strip
+  to lead with what's actually built: verified sign-in, direct buyer-
+  seller messaging, real price-vs-market comparison on listings, and a
+  real dealer cash-bid flow on submitted trade-ins — rather than
+  algorithmic-pricing and escrow-protection language the product doesn't
+  back up yet.
+- Verified: full rebuild + lint clean (only the 4 pre-existing accepted
+  warnings remain). Playwright screenshots confirm the mobile and desktop
+  Home pages render correctly with the new copy.
+
 ## 0.14.0 — 2026-09-21
 
 Real buyer/seller messaging — the last major gap from `docs/db-design.md`'s

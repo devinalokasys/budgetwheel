@@ -1,38 +1,39 @@
+// Feature callouts, not live metrics — the app has no real inventory scale,
+// KBB integration, sale-turnaround tracking, or escrow service to report
+// real numbers for, so this doesn't pretend to be a telemetry ticker.
 export const telemetryMetrics = [
   {
-    icon: 'dataset',
+    icon: 'verified_user',
     tone: 'primary' as const,
-    value: '14,208',
-    delta: '+340 today',
-    label: 'Active Verified Units',
+    value: 'Verified Sign-In',
+    label: 'Every account authenticated, not anonymous',
+  },
+  {
+    icon: 'forum',
+    tone: 'secondary' as const,
+    value: 'Direct Messaging',
+    label: 'Talk to the actual buyer or seller',
   },
   {
     icon: 'price_check',
-    tone: 'secondary' as const,
-    value: '$1,420 Below',
-    label: 'Avg Regional KBB Baseline',
-  },
-  {
-    icon: 'speed',
     tone: 'tertiary' as const,
-    value: '4.2 Days',
-    delta: 'Fast',
-    label: 'Median Sale Turnaround',
+    value: 'Price Transparency',
+    label: 'See price-vs-market on every listing',
   },
   {
-    icon: 'lock_clock',
+    icon: 'storefront',
     tone: 'primary' as const,
-    value: '100% Escrow',
-    label: 'Guaranteed Title Protection',
+    value: 'Private-Party + Dealer',
+    label: 'Both sides of the market, one place',
   },
 ]
 
 export const categories = [
-  { label: 'SUVs & Crossovers', units: '18,420 Active Units', from: 'From $14,900', icon: 'directions_car', tone: 'primary' as const, bodyType: 'suv' as const },
-  { label: 'Sedans & Coupes', units: '12,150 Active Units', from: 'From $11,500', icon: 'directions_car', tone: 'secondary' as const, bodyType: 'sedan' as const },
-  { label: 'EV & Clean Fuel', units: '6,890 Active Units', from: 'From $19,400', icon: 'bolt', tone: 'tertiary' as const, bodyType: 'ev' as const },
-  { label: 'Trucks & Work', units: '5,340 Active Units', from: 'From $18,200', icon: 'local_shipping', tone: 'primary' as const, bodyType: 'truck' as const },
-  { label: 'Performance & GT', units: '3,020 Active Units', from: 'From $29,990', icon: 'sports_score', tone: 'primary-fixed-dim' as const, bodyType: 'other' as const },
+  { label: 'SUVs & Crossovers', units: 'Browse Listings', from: 'From $14,900', icon: 'directions_car', tone: 'primary' as const, bodyType: 'suv' as const },
+  { label: 'Sedans & Coupes', units: 'Browse Listings', from: 'From $11,500', icon: 'directions_car', tone: 'secondary' as const, bodyType: 'sedan' as const },
+  { label: 'EV & Clean Fuel', units: 'Browse Listings', from: 'From $19,400', icon: 'bolt', tone: 'tertiary' as const, bodyType: 'ev' as const },
+  { label: 'Trucks & Work', units: 'Browse Listings', from: 'From $18,200', icon: 'local_shipping', tone: 'primary' as const, bodyType: 'truck' as const },
+  { label: 'Performance & GT', units: 'Browse Listings', from: 'From $29,990', icon: 'sports_score', tone: 'primary-fixed-dim' as const, bodyType: 'other' as const },
 ]
 
 export interface ShowcaseCard {
@@ -57,7 +58,7 @@ export const showcaseCards: ShowcaseCard[] = [
     id: 'bmw-330i',
     image: '/images/bmw-330i-showcase.jpg',
     dealPill: { icon: 'trending_down', label: '$1,450 Below Market' },
-    bottomPill: { icon: 'shield', label: 'Clean CARFAX • 1-Owner', tone: 'secondary' },
+    bottomPill: { icon: 'shield', label: 'Clean Title • 1-Owner', tone: 'secondary' },
     location: 'San Jose, CA • 12 mi away',
     sellerType: 'Franchise Dealer',
     sellerTone: 'primary',
@@ -77,7 +78,7 @@ export const showcaseCards: ShowcaseCard[] = [
     image: '/images/tesla-model-3-showcase.jpg',
     dealPill: { icon: 'bolt', label: '$2,400 Below Avg' },
     bottomPill: { icon: 'battery_charging_full', label: '98% Battery Health', tone: 'secondary' },
-    location: 'Austin, TX • Verified Escrow',
+    location: 'Austin, TX • Private Party',
     sellerType: 'Private Seller',
     sellerTone: 'secondary',
     title: '2022 Tesla Model 3 Long Range',
@@ -96,7 +97,7 @@ export const showcaseCards: ShowcaseCard[] = [
     image: '/images/toyota-rav4-showcase.jpg',
     dealPill: { icon: 'eco', label: '40 MPG • Fair Deal' },
     bottomPill: { icon: 'check', label: 'Zero Accidents Reported', tone: 'on-surface' },
-    location: 'Austin, TX • Free Shipping',
+    location: 'Austin, TX • 5 mi away',
     sellerType: 'BudgetWheels Fleet',
     sellerTone: 'primary',
     title: '2020 Toyota RAV4 Hybrid XSE',

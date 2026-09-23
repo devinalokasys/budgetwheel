@@ -17,10 +17,10 @@ const categories: { label: string; icon: string; bodyType: VehicleListing['bodyT
 ]
 
 const stats = [
-  { value: '150k+', label: 'Cars Sold', tone: 'text-on-surface' },
-  { value: 'Verified', label: 'Dealers Only', tone: 'text-primary' },
-  { value: 'Free', label: 'Carfax Reports', tone: 'text-secondary' },
-  { value: '100%', label: 'Escrow Wire', tone: 'text-on-surface' },
+  { value: 'Verified', label: 'Every Account', tone: 'text-primary' },
+  { value: 'Direct', label: 'Buyer-Seller Chat', tone: 'text-on-surface' },
+  { value: 'Free', label: 'History Reports', tone: 'text-secondary' },
+  { value: 'Live', label: 'Price vs. Market', tone: 'text-on-surface' },
 ]
 
 export default function Home() {
@@ -57,13 +57,13 @@ export default function Home() {
             <div className="flex items-center gap-space-xs">
               <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
               <span className="font-label-sm text-label-sm text-secondary uppercase tracking-widest">
-                Precision Market Engine
+                Verified Buyers &amp; Sellers
               </span>
             </div>
             <h2 className="font-headline-xl-mobile text-headline-xl-mobile text-on-surface tracking-tight leading-tight">
-              Find your machine.
+              Find your next car.
               <br />
-              <span className="text-primary">Under market value.</span>
+              <span className="text-primary">Buy and sell with confidence.</span>
             </h2>
           </div>
           <form className="flex flex-col gap-space-sm relative z-10" onSubmit={handleSearch}>
@@ -118,7 +118,7 @@ export default function Home() {
               type="submit"
             >
               <Icon name="search" className="text-[20px]" />
-              <span>Search 45,820 Vehicles</span>
+              <span>Search Vehicles</span>
             </button>
           </form>
         </div>
@@ -134,7 +134,7 @@ export default function Home() {
             <div className="flex flex-col">
               <span className="font-headline-sm text-headline-sm text-on-surface">Buy a Car</span>
               <span className="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
-                Browse 45,000+ verified listings
+                Real listings from verified accounts
               </span>
             </div>
             <div className="mt-space-sm flex items-center gap-1 text-primary font-label-sm text-label-sm">
@@ -154,7 +154,7 @@ export default function Home() {
                 Sell Your Car
               </span>
               <span className="font-body-sm text-body-sm text-on-surface-variant mt-1 line-clamp-2">
-                Instant Carfax valuation &amp; cash offer
+                Instant history report &amp; cash offer
               </span>
             </div>
             <div className="mt-space-sm flex items-center gap-1 text-secondary font-label-sm text-label-sm">
@@ -236,7 +236,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col">
               <span className="font-headline-sm text-headline-sm text-on-surface">
-                Free Instant Carfax
+                Free Vehicle History Report
               </span>
               <span className="font-body-sm text-body-sm text-on-surface-variant">
                 Included on every single listing

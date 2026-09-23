@@ -49,21 +49,17 @@ export default function HomeDesktop() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
                 </span>
                 <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary">
-                  Real-Time Market Telemetry Active
-                </span>
-                <span className="w-1 h-1 rounded-full bg-outline-variant" />
-                <span className="font-label-sm text-label-sm text-on-surface-variant">
-                  45,820 Inspected Vehicles Online
+                  Verified Buyers &amp; Sellers
                 </span>
               </div>
 
               <h1 className="font-display-hero text-display-hero text-on-surface max-w-4xl tracking-tight">
-                Precision Automotive Marketplace.{' '}
-                <span className="text-primary">Buy &amp; Sell</span> at Real Market Value.
+                A Car Marketplace Built on{' '}
+                <span className="text-primary">Trust</span>, Not Just Price.
               </h1>
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-space-sm mb-space-xl">
-                Real-time algorithmic valuation, transparent 100% verified vehicle histories,
-                digital escrow protection, and instant dealer cash buyout guarantees.
+                Verified accounts, transparent vehicle history reports, and direct messaging
+                between buyers and sellers — private-party and dealer listings, side by side.
               </p>
 
               <div className="w-full max-w-5xl rounded-xl bg-surface-container-low p-space-md shadow-2xl">
@@ -71,9 +67,6 @@ export default function HomeDesktop() {
                   <button className="px-5 py-2.5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center gap-2 shadow-md transition-all">
                     <Icon name="directions_car" className="text-[18px]" />
                     <span>All Inventory</span>
-                    <span className="px-1.5 py-0.5 rounded-full bg-on-primary-container/20 font-label-sm text-label-sm">
-                      45.8k
-                    </span>
                   </button>
                   <button className="px-5 py-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md flex items-center gap-2 transition-colors">
                     <Icon name="verified" className="text-[18px]" />
@@ -155,7 +148,7 @@ export default function HomeDesktop() {
                   <div className="flex flex-wrap items-center gap-2">
                     {[
                       { icon: 'check_circle', tone: 'secondary', label: 'Clean Title Only' },
-                      { icon: 'verified_user', tone: 'secondary', label: '1-Owner Carfax' },
+                      { icon: 'verified_user', tone: 'secondary', label: '1-Owner History' },
                       { icon: 'trending_down', tone: 'tertiary', label: 'Price Drop < 48h' },
                       { icon: 'money_off', tone: 'outline', label: 'Zero Dealer Doc Fees' },
                     ].map((chip) => (
@@ -176,7 +169,7 @@ export default function HomeDesktop() {
                     className="w-full md:w-auto px-8 py-3.5 rounded-lg bg-primary-container hover:bg-inverse-primary text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center gap-3 shadow-lg shadow-primary-container/25 transition-all"
                   >
                     <Icon name="search" className="text-[22px]" />
-                    <span>Query 45,820 Units</span>
+                    <span>Search Inventory</span>
                   </button>
                 </div>
               </div>
@@ -194,14 +187,9 @@ export default function HomeDesktop() {
                       <Icon name={metric.icon} className="text-[24px]" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">
-                          {metric.value}
-                        </span>
-                        {metric.delta && (
-                          <span className="font-label-sm text-label-sm text-secondary">{metric.delta}</span>
-                        )}
-                      </div>
+                      <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">
+                        {metric.value}
+                      </span>
                       <span className="font-body-sm text-body-sm text-on-surface-variant truncate">
                         {metric.label}
                       </span>
@@ -220,21 +208,21 @@ export default function HomeDesktop() {
                   <div>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/15 text-primary font-label-sm text-label-sm uppercase tracking-wider mb-space-sm">
                       <Icon name="shopping_cart" className="text-[16px]" />
-                      <span>Acquisition Stream</span>
+                      <span>Browse &amp; Compare</span>
                     </div>
                     <h2 className="font-headline-lg text-headline-lg text-on-surface mb-space-xs">
-                      Find Your Next Machine at Pure Wholesale Parity.
+                      Browse Real Listings. No Dealer Games.
                     </h2>
                     <p className="font-body-md text-body-md text-on-surface-variant mb-space-md">
-                      Access certified, algorithmic-screened inventory directly before dealer
-                      markups. Compare multiple units side-by-side with full Carfax provenance and
-                      instant pre-qualified finance terms.
+                      Every listing shows a vehicle history report and verified seller details —
+                      private-party and dealer inventory side by side, with price-vs-market shown
+                      up front instead of buried in a negotiation.
                     </p>
                     <div className="flex flex-col gap-space-sm mb-space-lg">
                       {[
-                        'Algorithmic "Great Deal" transparency badges showing dollar delta',
-                        'Soft-pull instant pre-qualification (Zero FICO score impact)',
-                        '7-Day / 400-Mile money-back return policy on all certified units',
+                        'Price-vs-market comparison shown on every listing',
+                        'Message sellers directly — no lead reselling to third parties',
+                        'Every account signs in with a verified identity',
                       ].map((point) => (
                         <div key={point} className="flex items-center gap-3">
                           <span className="w-5 h-5 rounded-full bg-secondary/15 text-secondary flex items-center justify-center text-[12px] font-bold shrink-0">
@@ -250,7 +238,7 @@ export default function HomeDesktop() {
                       onClick={() => navigate('/browse')}
                       className="px-6 py-3 rounded-lg bg-primary-container hover:bg-inverse-primary text-on-primary-container font-headline-sm text-headline-sm flex items-center gap-2 shadow-md transition-all"
                     >
-                      <span>Browse 45k+ Vehicles</span>
+                      <span>Browse Vehicles</span>
                       <Icon name="arrow_forward" className="text-[18px]" />
                     </button>
                     <button className="px-5 py-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-2 transition-colors">
@@ -265,53 +253,36 @@ export default function HomeDesktop() {
                   <div>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/15 text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-space-sm">
                       <Icon name="monetization_on" className="text-[16px]" />
-                      <span>Instant Cash Liquidity</span>
+                      <span>Sell Your Car</span>
                     </div>
                     <h2 className="font-headline-lg text-headline-lg text-on-surface mb-space-xs">
-                      Algorithmic Valuation &amp; Binding Dealer Cashout.
+                      Certified Dealers Bid on Your Car.
                     </h2>
                     <p className="font-body-md text-body-md text-on-surface-variant mb-space-md">
-                      Run our computer-vision valuation model against live wholesale auction
-                      telemetry. Pick your payout route: 100% dollar-yield private listing or
-                      24-hour binding dealer buyout.
+                      Submit your car's details once. Certified dealers review it and place cash
+                      offers directly — you see every bid and pick the one you want, or list it
+                      yourself on the marketplace instead.
                     </p>
                     <div className="p-space-md rounded-lg bg-surface-container mb-space-md">
-                      <label className="font-label-sm text-label-sm uppercase tracking-wider text-outline block mb-2">
-                        Enter VIN or License Plate &amp; State
-                      </label>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <div className="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container-lowest">
-                          <Icon name="pin" className="text-outline text-[18px]" />
-                          <input
-                            className="w-full bg-transparent font-headline-sm text-headline-sm text-on-surface placeholder:text-outline-variant uppercase focus:outline-none"
-                            placeholder="17-Digit VIN or ABC-1234"
-                            type="text"
-                          />
-                        </div>
-                        <button
-                          onClick={() => navigate('/sell')}
-                          className="px-5 py-2.5 rounded-lg bg-secondary-container hover:bg-secondary text-on-secondary font-headline-sm text-headline-sm flex items-center justify-center gap-2 shrink-0 shadow-md transition-all"
-                        >
-                          <Icon name="bolt" className="text-[18px]" />
-                          <span>Get Live Offer</span>
-                        </button>
-                      </div>
-                      <div className="flex items-center justify-between text-body-sm font-body-sm text-outline mt-2 px-1">
-                        <span>Instant automated pull via DMV record</span>
-                        <span className="text-secondary font-semibold">Average buyout: $24,800</span>
-                      </div>
+                      <button
+                        onClick={() => navigate('/sell')}
+                        className="w-full px-5 py-3 rounded-lg bg-secondary-container hover:bg-secondary text-on-secondary font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-md transition-all"
+                      >
+                        <Icon name="bolt" className="text-[18px]" />
+                        <span>Submit Your Car</span>
+                      </button>
                     </div>
                     <div className="grid grid-cols-2 gap-3 mb-space-sm">
                       <div className="p-2.5 rounded-lg bg-surface-container-lowest flex items-center gap-2">
-                        <Icon name="electric_bolt" className="text-secondary text-[20px]" />
+                        <Icon name="gavel" className="text-secondary text-[20px]" />
                         <span className="font-body-sm text-body-sm text-on-surface">
-                          Offers valid for 7 full days
+                          Real dealers, real bids — no fine print
                         </span>
                       </div>
                       <div className="p-2.5 rounded-lg bg-surface-container-lowest flex items-center gap-2">
-                        <Icon name="front_loader" className="text-primary text-[20px]" />
+                        <Icon name="storefront" className="text-primary text-[20px]" />
                         <span className="font-body-sm text-body-sm text-on-surface">
-                          Complimentary doorstep pickup
+                          Or list it yourself, buyer-to-buyer
                         </span>
                       </div>
                     </div>
@@ -321,7 +292,7 @@ export default function HomeDesktop() {
                       onClick={() => navigate('/sell')}
                       className="inline-flex items-center gap-2 font-label-md text-label-md text-primary hover:text-primary-fixed-dim transition-colors"
                     >
-                      <span>Explore Trade-In Equity Exchange &amp; Negative Equity Roll</span>
+                      <span>See How Selling Works</span>
                       <Icon name="chevron_right" className="text-[16px]" />
                     </button>
                   </div>
@@ -380,14 +351,13 @@ export default function HomeDesktop() {
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-2">
                     <Icon name="verified" className="text-[16px]" />
-                    <span>Algorithmic Signal Index</span>
+                    <span>Priced Below Market</span>
                   </div>
                   <h2 className="font-headline-xl text-headline-xl text-on-surface tracking-tight">
-                    Today's Verified Market Arbitrage
+                    A Few Listings Worth a Look
                   </h2>
                   <p className="font-body-md text-body-md text-on-surface-variant mt-1">
-                    Vehicles vetted ≥ $1,200 below market index with certified single-owner or
-                    franchise provenance.
+                    Priced below comparable listings, with a clean history and verified seller.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 p-1.5 rounded-lg bg-surface-container-low self-start lg:self-auto">

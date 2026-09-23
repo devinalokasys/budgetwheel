@@ -75,7 +75,14 @@ async function sellerLabel(l: VehicleListing): Promise<{ name: string; verified:
     return { name: 'Private Seller', verified: 'ID Verified' }
   }
   const dealer = await db.getDealerProfile(l.sellerId)
-  return { name: dealer?.businessName ?? 'Verified Dealer', verified: 'Verified Dealer' }
+  // Reflects the actual DealerProfile.verified flag rather than assuming
+  // every dealer-type seller is verified — a dealer whose license hasn't
+  // been checked yet (verified: false, the default for a new dealer
+  // account) shows as unverified, not "Verified Dealer".
+  return {
+    name: dealer?.businessName ?? 'Dealer',
+    verified: dealer?.verified ? 'Verified Dealer' : 'Unverified Dealer',
+  }
 }
 
 export async function toFeaturedListingView(l: VehicleListing): Promise<Listing> {
