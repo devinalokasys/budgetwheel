@@ -34,7 +34,15 @@ const sellerTone: Record<string, string> = {
 export default function HomeDesktop() {
   const navigate = useNavigate()
   const [budget, setBudget] = useState(35000)
+  const [makeModel, setMakeModel] = useState('')
   const [showcaseCards, setShowcaseCards] = useState<ShowcaseListingView[]>([])
+
+  function handleSearch() {
+    const params = new URLSearchParams()
+    if (makeModel.trim()) params.set('q', makeModel.trim())
+    params.set('priceMaxCents', String(budget * 100))
+    navigate(`/browse?${params.toString()}`)
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -89,7 +97,10 @@ export default function HomeDesktop() {
                     <Icon name="verified" className="text-[18px]" />
                     <span>Certified Pre-Owned</span>
                   </button>
-                  <button className="px-5 py-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md flex items-center gap-2 transition-colors">
+                  <button
+                    onClick={() => navigate('/browse?bodyType=ev')}
+                    className="px-5 py-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md flex items-center gap-2 transition-colors"
+                  >
                     <Icon name="bolt" className="text-[18px]" />
                     <span>EV &amp; Hybrid</span>
                   </button>
@@ -113,6 +124,9 @@ export default function HomeDesktop() {
                         className="w-full bg-transparent font-headline-sm text-headline-sm text-on-surface placeholder:text-outline-variant focus:outline-none"
                         placeholder="e.g. BMW, Tesla, Toyota..."
                         type="text"
+                        value={makeModel}
+                        onChange={(e) => setMakeModel(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                       />
                     </div>
                   </div>
@@ -182,7 +196,7 @@ export default function HomeDesktop() {
                     ))}
                   </div>
                   <button
-                    onClick={() => navigate(`/browse?priceMaxCents=${budget * 100}`)}
+                    onClick={handleSearch}
                     className="w-full md:w-auto px-8 py-3.5 rounded-lg bg-primary-container hover:bg-inverse-primary text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center gap-3 shadow-lg shadow-primary-container/25 transition-all"
                   >
                     <Icon name="search" className="text-[22px]" />

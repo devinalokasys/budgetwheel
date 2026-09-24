@@ -27,11 +27,17 @@ export default function Home() {
   const navigate = useNavigate()
   const [featuredDeals, setFeaturedDeals] = useState<Listing[]>([])
   const maxPriceRef = useRef<HTMLSelectElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   function handleSearch(e: FormEvent) {
     e.preventDefault()
+    const params = new URLSearchParams()
+    const query = searchInputRef.current?.value.trim()
     const priceMax = maxPriceRef.current?.value
-    navigate(priceMax ? `/browse?priceMaxCents=${Number(priceMax) * 100}` : '/browse')
+    if (query) params.set('q', query)
+    if (priceMax) params.set('priceMaxCents', String(Number(priceMax) * 100))
+    const qs = params.toString()
+    navigate(qs ? `/browse?${qs}` : '/browse')
   }
 
   useEffect(() => {
@@ -73,6 +79,7 @@ export default function Home() {
                 className="absolute left-3 text-on-surface-variant text-[20px]"
               />
               <input
+                ref={searchInputRef}
                 className="w-full h-11 pl-10 pr-4 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg placeholder:text-outline focus:outline-none focus:bg-surface-container shadow-inner"
                 placeholder="Make, Model, or Keyword"
                 type="text"
