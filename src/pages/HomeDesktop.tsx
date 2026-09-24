@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon'
 import DesktopHeader from '../components/DesktopHeader'
 import DesktopFooter from '../components/DesktopFooter'
-import { telemetryMetrics, categories, showcaseCards } from '../data/homeDesktop'
+import { telemetryMetrics, categories } from '../data/homeDesktop'
+import { db } from '../lib/db'
+import { toShowcaseListingView, type ShowcaseListingView } from '../lib/db/mappers'
 
 const metricTone: Record<string, string> = {
   primary: 'bg-primary/10 text-primary',
@@ -32,6 +34,21 @@ const sellerTone: Record<string, string> = {
 export default function HomeDesktop() {
   const navigate = useNavigate()
   const [budget, setBudget] = useState(35000)
+  const [showcaseCards, setShowcaseCards] = useState<ShowcaseListingView[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      await db.seedIfEmpty()
+      const listings = await db.listListings({ status: 'active' })
+      const views = await Promise.all(listings.slice(0, 4).map(toShowcaseListingView))
+      if (!cancelled) setShowcaseCards(views)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <div className="bg-background font-body-md text-body-md text-on-background antialiased min-h-screen">
@@ -428,7 +445,7 @@ export default function HomeDesktop() {
                             <span className="font-label-numeric-md text-label-numeric-md text-secondary block">
                               {card.monthlyEstimate}
                             </span>
-                            <span className="font-body-sm text-body-sm text-outline">{card.apr}</span>
+                            <span className="font-body-sm text-body-sm text-outline">{card.term}</span>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -437,7 +454,7 @@ export default function HomeDesktop() {
                             <span>Compare</span>
                           </button>
                           <button
-                            onClick={() => navigate('/browse')}
+                            onClick={() => navigate(`/listing/${card.id}`)}
                             className="py-2.5 rounded-lg bg-primary-container hover:bg-inverse-primary text-on-primary-container font-label-md text-label-md flex items-center justify-center gap-1 transition-colors shadow-sm"
                           >
                             <span>View Details</span>

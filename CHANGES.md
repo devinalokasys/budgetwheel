@@ -1,5 +1,35 @@
 # Changes
 
+## 0.17.0 — 2026-09-24
+
+Wired HomeDesktop's "A Few Listings Worth a Look" showcase to real
+listings — it was the one piece of Home still on static mock data
+(`data/homeDesktop.ts`'s `showcaseCards` array), which was itself a data
+inconsistency: mobile Home already fetches real listings for its
+Featured Deals rail, so desktop and mobile were showing different cars.
+
+- New `toShowcaseListingView` mapper in `src/lib/db/mappers.ts`, following
+  the same pattern as `toFeaturedListingView`/`toBrowseListingView` —
+  converts a `VehicleListing` into the showcase card's exact display
+  shape rather than changing the presentational JSX.
+- Dropped the `apr` field entirely rather than carrying it forward: the
+  mock data quoted a specific interest rate per car (e.g. "5.9% APR")
+  that has no backing field anywhere in the schema — the same kind of
+  fabricated-specificity issue already fixed elsewhere (0.15.0–0.16.1).
+  Replaced with a plain loan-term label, matching the no-rate-quoted
+  convention `toFeaturedListingView` already uses for its monthly
+  estimate.
+- `HomeDesktop.tsx` now fetches the first 4 active listings on mount
+  (same `db.seedIfEmpty()` + `db.listListings({status:'active'})` pattern
+  as mobile `Home.tsx`) and "View Details" navigates to the real
+  `/listing/:id` route instead of a generic `/browse` link.
+- Removed the now-dead `ShowcaseCard` interface and `showcaseCards` mock
+  array from `data/homeDesktop.ts`.
+- Verified: rebuild + lint clean, Playwright-confirmed the section
+  renders real seed listings (2023 Ford F-150 Lightning, 2022 BMW 330i,
+  2022 Tesla Model 3, 2021 Audi A5) with live-computed below-market deltas
+  and real Carfax-derived history pills, no console errors.
+
 ## 0.16.1 — 2026-09-24
 
 First production deploy went live at https://budgetwheel.web.app, which

@@ -268,3 +268,57 @@ export async function toBrowseListingView(l: VehicleListing): Promise<BrowseList
     ],
   }
 }
+
+export interface ShowcaseListingView {
+  id: string
+  image: string
+  dealPill: { icon: string; label: string }
+  bottomPill: { icon: string; label: string; tone: 'secondary' | 'primary' | 'on-surface' }
+  location: string
+  sellerType: string
+  sellerTone: 'primary' | 'secondary'
+  title: string
+  subtitle: string
+  specs: [{ label: string; value: string }, { label: string; value: string }]
+  price: string
+  priceNote: string
+  monthlyEstimate: string
+  term: string
+}
+
+export async function toShowcaseListingView(l: VehicleListing): Promise<ShowcaseListingView> {
+  const [image, historyPill, seller] = await Promise.all([
+    primaryImageUrl(l.id),
+    historyPillFor(l),
+    sellerLabel(l),
+  ])
+  const badge = computeDealBadge(l)
+
+  return {
+    id: l.id,
+    image,
+    dealPill: {
+      icon: badge.icon,
+      label: badge.priceDeltaLabel ? `${badge.priceDeltaLabel} Below Market` : badge.label,
+    },
+    bottomPill: {
+      icon: historyPill.icon,
+      label: historyPill.label,
+      tone: historyPill.icon === 'shield' ? 'secondary' : 'on-surface',
+    },
+    location: `${l.location.city}, ${l.location.state}`,
+    sellerType: l.sellerType === 'private' ? 'Private Seller' : seller.name,
+    sellerTone: l.sellerType === 'private' ? 'secondary' : 'primary',
+    title: `${l.year} ${l.make} ${l.model}`,
+    subtitle: [l.trim, l.engine].filter(Boolean).join(' • '),
+    specs: [
+      { label: 'Odometer', value: formatMileageFull(l.mileage) },
+      { label: 'Drivetrain', value: l.drivetrain ?? '—' },
+    ],
+    price: formatUsd(l.priceCents),
+    priceNote:
+      l.marketAvgCents != null && l.marketAvgCents > l.priceCents ? 'Priced below market' : '',
+    monthlyEstimate: l.monthlyEstimateCents ? `Est. ${formatUsd(l.monthlyEstimateCents)}/mo` : '',
+    term: '72 mo term',
+  }
+}
