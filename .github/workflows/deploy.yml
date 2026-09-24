@@ -24,6 +24,23 @@ jobs:
           VITE_FIREBASE_API_KEY: AIzaSyDY7JvtHfGmvZJyiGL3y9ooHhH6O9cM9RQ
           VITE_FIREBASE_AUTH_DOMAIN: budgetwheel.firebaseapp.com
           VITE_FIREBASE_MESSAGING_SENDER_ID: "94400376803"
+          VITE_DEALER_APP_URL: https://budgetwheel-dealer.web.app
+      - run: npm run build:dealer
+        env:
+          # Same public config as above, plus the two vars that make this
+          # build the dealer app: VITE_APP_ROLE flips AuthContext's
+          # first-sign-in provisioning to type: 'dealer', and
+          # VITE_CONSUMER_APP_URL is where CrossAppRedirect sends any
+          # unmatched path.
+          VITE_DATA_PROVIDER: firestore
+          VITE_FIREBASE_PROJECT_ID: budgetwheel
+          VITE_FIREBASE_APP_ID: "1:94400376803:web:4022d9c6eeae0f3fa13ad6"
+          VITE_FIREBASE_STORAGE_BUCKET: budgetwheel.firebasestorage.app
+          VITE_FIREBASE_API_KEY: AIzaSyDY7JvtHfGmvZJyiGL3y9ooHhH6O9cM9RQ
+          VITE_FIREBASE_AUTH_DOMAIN: budgetwheel.firebaseapp.com
+          VITE_FIREBASE_MESSAGING_SENDER_ID: "94400376803"
+          VITE_APP_ROLE: dealer
+          VITE_CONSUMER_APP_URL: https://budgetwheel.web.app
       - uses: google-github-actions/auth@v2
         with: { credentials_json: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" }
       - run: npx firebase-tools deploy --only hosting --project budgetwheel --non-interactive

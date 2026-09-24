@@ -44,9 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           let userProfile = await db.getUser(nextUser.uid)
           if (!userProfile && !provisioned.current.has(nextUser.uid)) {
             provisioned.current.add(nextUser.uid)
+            // Which role a fresh sign-in provisions is a build-time choice —
+            // the dealer app build sets VITE_APP_ROLE=dealer so a dealer
+            // account originates there, not via a toggle inside the
+            // consumer app. Matches the VITE_DATA_PROVIDER branch pattern.
             userProfile = {
               id: nextUser.uid,
-              type: 'consumer',
+              type: import.meta.env.VITE_APP_ROLE === 'dealer' ? 'dealer' : 'consumer',
               email: nextUser.email ?? '',
               displayName: nextUser.displayName ?? 'BudgetWheels User',
               photoUrl: nextUser.photoURL,

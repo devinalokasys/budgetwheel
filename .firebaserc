@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "budgetwheel"
+  },
+  "targets": {
+    "budgetwheel": {
+      "hosting": {
+        "consumer": ["budgetwheel"],
+        "dealer": ["budgetwheel-dealer"]
+      }
+    }
   }
 }

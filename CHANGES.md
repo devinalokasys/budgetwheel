@@ -1,5 +1,75 @@
 # Changes
 
+## 0.19.0 — 2026-09-24
+
+Split the Dealer Portal into its own deployed app, on its own Firebase
+Hosting site. The `/dealer` and `/dealer/deals` routes had been
+unreachable by any real account: `DealerRoute` correctly gated on
+`profile.type === 'dealer'`, but `AuthContext`'s first-sign-in
+provisioning always set `type: 'consumer'` — there was never a UI path to
+become a dealer. Rather than add an in-app toggle, dealer accounts now
+originate from a separate app, matching how a real product would keep a
+business-facing console distinct from the consumer marketplace.
+
+- New `dealer.html` / `src/dealer-main.tsx` / `src/DealerApp.tsx` entry
+  point (same repo, same shared `db`/schema/auth layer) reusing
+  `DealerConsole(Desktop)`/`DealPipeline(Desktop)` verbatim — those pages
+  never imported consumer chrome to begin with, so the split needed zero
+  changes to them.
+- `vite.config.ts` now builds two independent bundles (`npm run build` →
+  `dist`, `npm run build:dealer` → `dist-dealer`) via a `BUILD_TARGET` env
+  var, each with its own env vars at build time — needed so only the
+  dealer build sets `VITE_APP_ROLE=dealer`. Also required a dev-server
+  middleware: Vite's dev server always falls back to `index.html` for any
+  unmatched client route regardless of `rollupOptions.input`, so
+  `npm run dev:dealer` would otherwise silently serve the consumer app at
+  every path except the literal `/dealer.html`.
+- `AuthContext.tsx`'s first-sign-in provisioning now reads
+  `VITE_APP_ROLE` (matching the existing `VITE_DATA_PROVIDER` build-time
+  branch pattern) — the dealer build provisions `type: 'dealer'` instead
+  of hardcoding `'consumer'`.
+- New `DealerRegistrationForm.tsx`: once `DealerRoute` confirms a
+  `dealer`-type account with no `DealerProfile` doc yet, it collects a
+  business name (required — prevents `mappers.ts`'s `sellerLabel()`
+  falling back to a bare "Dealer") and address before entering the
+  console. Uses the already-existing `db.putDealerProfile()` — no
+  data-layer changes.
+- New `CrossAppRedirect.tsx`: the reused dealer components
+  (`Header`/`DealerBottomNav`/`DealerDesktopShell`) hardcode links into
+  consumer-only routes (`/`, `/browse`, `/sell`, `/messages`) that don't
+  exist in the dealer app's trimmed router. Rather than editing those
+  shared files, any unmatched path bounces cross-origin to the real page
+  on the consumer app via `VITE_CONSUMER_APP_URL`.
+- `firebase.json`/`.firebaserc` gained a second Hosting target (`dealer`
+  → `dist-dealer`, deploying to a new `budgetwheel-dealer` Hosting site),
+  following the working multi-site pattern already used by the sibling
+  `chess-master` repo. One correction from the initial pass: Vite emits
+  `dist-dealer/dealer.html`, not `index.html` — the rewrite destination
+  had to point at the actual output filename.
+- `firestore.rules`: `users/{uid}` previously let a signed-in user update
+  any field on their own doc, including `type` — meaning any consumer
+  could self-grant dealer status via a direct Firestore write from
+  devtools, independent of this split. Locked `type` to be set only at
+  document creation. Also tightened `dealerProfiles/{uid}` writes to
+  require `type == 'dealer'`, matching the `get()` pattern
+  `tradeSubmissions` already used.
+- `src/App.tsx`: removed the now-dead `/dealer`/`/dealer/deals` routes and
+  imports. `DesktopHeader.tsx`'s "Dealer Portal" nav item now links
+  cross-origin to the dealer app's URL instead of a route that no longer
+  exists — a dealer account browsing the consumer marketplace still sees
+  it, since both apps share the same `users/{uid}` doc.
+- One remaining manual step, handed to the user: create the
+  `budgetwheel-dealer` Hosting site once via Firebase Console → Hosting →
+  Add another site (the CLI equivalent reliably SIGKILLs in this
+  environment, same as every other Firestore/deploy command this
+  session). Everything else deploys through the existing
+  `workflow_dispatch` GitHub Actions workflow.
+- Verified: both `npm run build`/`build:dealer` and lint clean. Playwright
+  confirmed: consumer app unaffected; dealer app redirects unauthenticated
+  visitors to `/login` with dealer-appropriate copy; an unmatched dealer
+  path correctly bounces to the real consumer page; the new registration
+  form renders correctly (checked via a temporary route, reverted after).
+
 ## 0.18.0 — 2026-09-24
 
 Wired `AccountDesktop.tsx` to real data — it was entirely static mock

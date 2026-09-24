@@ -3,17 +3,12 @@ import Layout from './components/Layout'
 import Responsive from './components/Responsive'
 import DesktopPageShell from './components/DesktopPageShell'
 import ProtectedRoute from './components/ProtectedRoute'
-import DealerRoute from './components/DealerRoute'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
 import ListingDetail from './pages/ListingDetail'
 import Sell from './pages/Sell'
 import Saved from './pages/Saved'
 import Placeholder from './pages/Placeholder'
-import DealerConsole from './pages/DealerConsole'
-import DealerConsoleDesktop from './pages/DealerConsoleDesktop'
-import DealPipeline from './pages/DealPipeline'
-import DealPipelineDesktop from './pages/DealPipelineDesktop'
 import Messages from './pages/Messages'
 import ConversationThread from './pages/ConversationThread'
 import AccountDesktop from './pages/AccountDesktop'
@@ -123,36 +118,6 @@ export default function App() {
                 desktop={<AccountDesktop />}
               />
             </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dealer"
-          element={
-            <DealerRoute>
-              <Responsive
-                mobile={
-                  <Layout title="Dealer Console" nav="dealer">
-                    <DealerConsole />
-                  </Layout>
-                }
-                desktop={<DealerConsoleDesktop />}
-              />
-            </DealerRoute>
-          }
-        />
-        <Route
-          path="/dealer/deals"
-          element={
-            <DealerRoute>
-              <Responsive
-                mobile={
-                  <Layout title="Deals" nav="dealer">
-                    <DealPipeline />
-                  </Layout>
-                }
-                desktop={<DealPipelineDesktop />}
-              />
-            </DealerRoute>
           }
         />
         <Route

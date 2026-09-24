@@ -26,7 +26,9 @@ export default function Login() {
         <div className="flex flex-col gap-space-xs">
           <h1 className="font-headline-lg text-headline-lg text-on-surface">Welcome back</h1>
           <p className="font-body-md text-body-md text-on-surface-variant">
-            Sign in to save listings, sell your car, and message dealers.
+            {import.meta.env.VITE_APP_ROLE === 'dealer'
+              ? 'Sign in to manage your inventory, trade-in bids, and buyer leads.'
+              : 'Sign in to save listings, sell your car, and message dealers.'}
           </p>
         </div>
 

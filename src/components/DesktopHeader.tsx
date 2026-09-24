@@ -8,10 +8,15 @@ interface DesktopHeaderProps {
   active?: 'browse' | 'saved' | 'dealer' | 'messages' | 'account'
 }
 
+// Dealer Portal now lives on its own deployed app (see src/DealerApp.tsx),
+// not a route in this one — a dealer account viewing the consumer
+// marketplace still gets a link back to it, just a cross-origin one.
+const dealerAppUrl = import.meta.env.VITE_DEALER_APP_URL ?? 'https://budgetwheel-dealer.web.app'
+
 const navItems = [
   { key: 'browse', label: 'Browse Inventory', to: '/browse' },
   { key: 'saved', label: 'Saved', to: '/saved' },
-  { key: 'dealer', label: 'Dealer Portal', to: '/dealer', dealerOnly: true },
+  { key: 'dealer', label: 'Dealer Portal', to: dealerAppUrl, dealerOnly: true },
   { key: 'messages', label: 'Messages', to: '/messages' },
 ] as const
 
@@ -71,7 +76,9 @@ export default function DesktopHeader({ active }: DesktopHeaderProps) {
             .map((item) => (
             <button
               key={item.key}
-              onClick={() => navigate(item.to)}
+              onClick={() =>
+                item.to.startsWith('http') ? (window.location.href = item.to) : navigate(item.to)
+              }
               className={`px-3 py-2 rounded-lg font-label-md text-label-md transition-colors flex items-center gap-1 ${
                 active === item.key
                   ? 'bg-surface-container-high text-primary'

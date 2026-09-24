@@ -10,15 +10,26 @@ service cloud.firestore {
     }
 
     // Own profile only — mirrors chess-master's users/{uid} pattern.
+    // `type` (consumer vs dealer) is set once at creation and locked after —
+    // db.putUser is only ever called at first-sign-in provisioning, so a
+    // client has no legitimate reason to change it post-creation. Without
+    // this, any signed-in consumer could self-grant dealer status via a
+    // direct Firestore write and walk straight past DealerRoute's UI gate.
     match /users/{uid} {
-      allow read, write: if signedIn() && request.auth.uid == uid;
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.type == resource.data.type;
     }
 
-    // Public read (dealer name/tier shown on public listings); only the
-    // dealer themself can write their own profile.
+    // Public read (dealer name/tier shown on public listings). Only the
+    // dealer themself can write their own profile, and only once their
+    // users/{uid} doc says type == 'dealer' (set by the dealer app's
+    // registration flow) — matches the get() pattern tradeSubmissions uses.
     match /dealerProfiles/{uid} {
       allow read: if true;
-      allow write: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid
+        && get(/databases/$(database)/documents/users/$(uid)).data.type == 'dealer';
     }
 
     // Public read (the whole point is a public marketplace). Only the
