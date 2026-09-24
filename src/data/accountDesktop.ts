@@ -3,7 +3,6 @@ export const telemetryStats = [
   { label: 'Active Listings', value: '1', unit: '($25,900 ask)', tone: 'primary' as const },
   { label: 'Buyer Inquiries', value: '6', unit: 'New (24h)', tone: 'secondary' as const },
   { label: 'Saved Alerts', value: '4', unit: 'Searches', tone: 'on-surface' as const },
-  { label: 'Buying Capacity', value: '$65,000', unit: '@ 840 Tier 1', tone: 'secondary' as const },
 ]
 
 export const garageVehicles = {
@@ -16,13 +15,13 @@ export const garageVehicles = {
     odometer: '32,150 mi',
     drivetrain: 'FWD 2.5L',
     listingPrice: '$25,900',
-    priceNote: '+$600 above algorithm floor',
+    priceNote: '+$1,400 above top dealer bid',
     topBuyout: { amount: '$24,500', by: 'Metro Auto Group' },
     stats: [
       { icon: 'visibility', value: '342', label: 'Unique Views' },
       { icon: 'bookmark', value: '28', label: 'Watchlists' },
       { icon: 'forum', value: '6 Active', label: 'Inquiries', tone: 'secondary' as const },
-      { icon: 'handshake', value: '2 Binding', label: 'Cash Offers', tone: 'primary' as const },
+      { icon: 'handshake', value: '2', label: 'Cash Offers', tone: 'primary' as const },
     ],
   },
   stored: {
@@ -42,12 +41,6 @@ export const garageVehicles = {
       { icon: 'query_stats', label: 'High Buyer Demand', note: '+14% Local Search Spike', tone: 'primary' as const },
     ],
   },
-}
-
-export const escrowStatus = {
-  amount: '$2,500',
-  dealId: '#BW-TX-88319',
-  vehicle: 'Camry SE',
 }
 
 export const inquiries = [
@@ -82,7 +75,7 @@ export const documents = [
     id: 'state-id',
     icon: 'badge',
     label: 'State ID / Passport',
-    note: 'Verified by Stripe Identity',
+    note: 'Uploaded by you',
     noteTone: 'secondary' as const,
     action: 'check' as const,
   },
@@ -113,7 +106,7 @@ export const documents = [
 ]
 
 export const marketAlerts = [
-  { id: 'buyout-offers', label: 'Dealer Buyout Offers', note: 'Push alert on new binding bids', checked: true },
+  { id: 'buyout-offers', label: 'Dealer Buyout Offers', note: 'Alert on new dealer bids', checked: true },
   { id: 'price-drops', label: 'Price Drop Triggers', note: 'SMS for saved inventory (-$250+)', checked: true },
   { id: 'buyer-chat', label: 'Buyer Chat Inquiries', note: 'Instant relay via Email & App', checked: true },
 ]

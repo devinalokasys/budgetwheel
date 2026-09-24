@@ -4,7 +4,6 @@ import DesktopFooter from '../components/DesktopFooter'
 import {
   telemetryStats,
   garageVehicles,
-  escrowStatus,
   inquiries,
   documents,
   marketAlerts,
@@ -65,13 +64,6 @@ export default function AccountDesktop() {
                 <span className="text-outline-variant">/</span>
                 <span className="text-primary font-semibold">My Garage &amp; Overview</span>
               </nav>
-              <div className="flex items-center gap-space-sm text-body-sm font-body-sm text-outline">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-secondary text-label-sm font-label-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-                  Telemetry Synced
-                </span>
-                <span>Last refresh: Just now</span>
-              </div>
             </div>
 
             <div className="relative w-full rounded-2xl bg-surface-container p-space-lg lg:p-space-xl shadow-xl overflow-hidden">
@@ -88,7 +80,7 @@ export default function AccountDesktop() {
                     </div>
                     <span
                       className="absolute -bottom-1 -right-1 bg-secondary-container text-on-secondary-container rounded-full p-1 shadow-sm flex items-center justify-center"
-                      title="KYC Identity Verified"
+                      title="Verified Account"
                     >
                       <Icon name="verified" className="text-[16px]" />
                     </span>
@@ -99,7 +91,7 @@ export default function AccountDesktop() {
                         Marcus Sterling
                       </h1>
                       <span className="px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-sm text-label-sm uppercase">
-                        Verified Trader
+                        Verified Account
                       </span>
                       <span className="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm">
                         Private Seller
@@ -109,11 +101,6 @@ export default function AccountDesktop() {
                       <span>Account ID: #BW-94821</span>
                       <span>•</span>
                       <span>Member since Oct 2022</span>
-                      <span>•</span>
-                      <span className="text-secondary flex items-center gap-1 font-label-sm text-label-sm">
-                        <Icon name="shield" className="text-[14px]" />
-                        Level 3 Certified
-                      </span>
                     </p>
                   </div>
                 </div>
@@ -128,18 +115,16 @@ export default function AccountDesktop() {
                   </button>
                   <button className="inline-flex items-center justify-center gap-2 px-space-md py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface transition-colors font-label-md text-label-md">
                     <Icon name="security" className="text-[18px]" />
-                    Security &amp; KYC
+                    Security
                   </button>
                 </div>
               </div>
 
-              <div className="mt-space-lg pt-space-md grid grid-cols-2 md:grid-cols-5 gap-space-sm">
-                {telemetryStats.map((stat, i) => (
+              <div className="mt-space-lg pt-space-md grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+                {telemetryStats.map((stat) => (
                   <div
                     key={stat.label}
-                    className={`bg-surface-container-lowest/70 p-space-sm rounded-lg flex flex-col ${
-                      i === telemetryStats.length - 1 ? 'col-span-2 md:col-span-1' : ''
-                    }`}
+                    className="bg-surface-container-lowest/70 p-space-sm rounded-lg flex flex-col"
                   >
                     <span className="font-label-sm text-label-sm text-outline uppercase tracking-wider">
                       {stat.label}
@@ -316,7 +301,7 @@ export default function AccountDesktop() {
                         </div>
                         <div className="mt-space-sm pt-space-xs w-full flex flex-col gap-1 text-left sm:text-right">
                           <span className="font-label-sm text-label-sm text-on-surface-variant">
-                            Instant Dealer Buyout Guarantee:
+                            Top Dealer Bid Received:
                           </span>
                           <span className="font-label-numeric-md text-label-numeric-md text-secondary">
                             {stored.buyoutGuarantee.amount}{' '}
@@ -362,45 +347,15 @@ export default function AccountDesktop() {
                 <div className="bg-surface-container rounded-2xl p-space-md lg:p-space-lg shadow-md flex flex-col gap-space-md">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-space-xs">
-                      <Icon name="swap_horizontal_circle" className="text-secondary text-[22px]" />
+                      <Icon name="forum" className="text-secondary text-[22px]" />
                       <h2 className="font-headline-md text-headline-md text-on-surface">
-                        Active Inquiries &amp; Escrow
+                        Buyer Inquiries
                       </h2>
                     </div>
                     <button className="font-label-md text-label-md text-primary hover:underline flex items-center gap-1">
                       Open Message Center
                       <Icon name="arrow_forward" className="text-[16px]" />
                     </button>
-                  </div>
-
-                  <div className="bg-surface-container-lowest p-space-md rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-space-md">
-                    <div className="flex items-start gap-space-sm">
-                      <div className="p-2.5 rounded-lg bg-secondary-container/20 text-secondary shrink-0">
-                        <Icon name="account_balance" className="text-[24px]" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-headline-sm text-headline-sm text-on-surface">
-                            Escrow Deposit Confirmed: {escrowStatus.amount}
-                          </span>
-                          <span className="px-2 py-0.5 rounded-full bg-secondary-container/30 text-secondary font-label-sm text-label-sm">
-                            Secured
-                          </span>
-                        </div>
-                        <p className="font-body-sm text-body-sm text-outline mt-0.5">
-                          {escrowStatus.vehicle} Deal ID {escrowStatus.dealId} — Earnest funds held by
-                          BudgetWheels Trust Bank N.A.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-space-xs shrink-0">
-                      <button className="px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md transition-colors">
-                        View Escrow Vault
-                      </button>
-                      <button className="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary-container hover:bg-inverse-primary font-label-md text-label-md transition-colors">
-                        Authorize Release
-                      </button>
-                    </div>
                   </div>
 
                   <div className="flex flex-col gap-space-xs">
@@ -448,71 +403,9 @@ export default function AccountDesktop() {
                 <div className="bg-surface-container rounded-2xl p-space-md lg:p-space-lg shadow-md flex flex-col gap-space-md">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-space-xs">
-                      <Icon name="account_balance_wallet" className="text-secondary text-[22px]" />
-                      <h2 className="font-headline-md text-headline-md text-on-surface">Buying Power Vault</h2>
-                    </div>
-                    <Icon name="info" className="text-outline cursor-pointer hover:text-on-surface text-[18px]" />
-                  </div>
-
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-surface-container-low via-surface-container-high to-surface-container-lowest p-space-md shadow-inner">
-                    <div className="flex items-center justify-between">
-                      <span className="font-label-sm text-label-sm text-outline uppercase tracking-wider">
-                        Pre-Approval Status
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm flex items-center gap-1">
-                        <Icon name="check_circle" className="text-[14px]" />
-                        Active (28d left)
-                      </span>
-                    </div>
-                    <div className="mt-space-sm">
-                      <div className="font-display-hero-mobile text-display-hero-mobile text-on-surface tracking-tight leading-none">
-                        $65,000
-                      </div>
-                      <div className="font-label-md text-label-md text-secondary mt-1">
-                        Tier 1 Prime @ 5.9% APR Guaranteed
-                      </div>
-                    </div>
-                    <div className="mt-space-md flex flex-col gap-1.5">
-                      <div className="flex justify-between text-body-sm font-body-sm text-outline">
-                        <span>Credit Profile: 840 (Soft Pull)</span>
-                        <span className="text-on-surface font-semibold">Zero Impact</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-surface-container-lowest overflow-hidden">
-                        <div className="h-full bg-secondary rounded-full" style={{ width: '88%' }} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-surface-container-lowest p-space-md rounded-xl flex flex-col gap-space-sm">
-                    <span className="font-label-sm text-label-sm text-outline uppercase tracking-wider">
-                      Instant Payment Simulator
-                    </span>
-                    <div className="flex items-center justify-between">
-                      <span className="font-body-md text-body-md text-on-surface-variant">Est. Monthly Payment</span>
-                      <span className="font-label-numeric-md text-label-numeric-md text-primary">
-                        $682 <span className="font-body-sm text-body-sm text-outline">/ mo</span>
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-body-sm font-body-sm text-outline">
-                      <span>Terms: 60 mos @ $5,000 down</span>
-                      <span className="text-secondary">Pre-locked</span>
-                    </div>
-                    <button className="w-full mt-1 inline-flex items-center justify-center gap-1.5 py-2 px-space-md rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md transition-colors">
-                      <Icon name="file_download" className="text-[16px]" />
-                      Download Pre-Approval PDF
-                    </button>
-                  </div>
-                </div>
-
-                <div className="bg-surface-container rounded-2xl p-space-md lg:p-space-lg shadow-md flex flex-col gap-space-md">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-space-xs">
                       <Icon name="verified" className="text-primary text-[22px]" />
-                      <h2 className="font-headline-md text-headline-md text-on-surface">KYC &amp; Vault Docs</h2>
+                      <h2 className="font-headline-md text-headline-md text-on-surface">My Documents</h2>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">
-                      100% Verified
-                    </span>
                   </div>
                   <div className="flex flex-col gap-space-xs">
                     {documents.map((doc) => (

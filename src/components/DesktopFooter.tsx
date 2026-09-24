@@ -25,16 +25,15 @@ export default function DesktopFooter() {
               <img alt="BudgetWheels" className="h-7 w-auto object-contain rounded-md" src="/images/logo-brand.jpg" />
             </div>
             <p className="font-body-md text-body-md text-on-surface-variant max-w-sm">
-              High-performance, algorithmic automotive trading and valuation infrastructure.
-              Verifying real-time marketplace equilibrium, certified battery diagnostics, and
-              transparent ownership histories.
+              A car marketplace for verified buyers and sellers. Private-party and dealer
+              listings, side by side, with a vehicle history report and transparent
+              price-vs-market comparison on every listing.
             </p>
             <div className="flex items-center gap-space-sm">
               <span className="inline-flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">
                 <Icon name="verified" className="text-[14px]" />
-                Marketplace Live
+                Verified Buyers &amp; Sellers
               </span>
-              <span className="font-body-sm text-body-sm text-outline">14,208 verified units active</span>
             </div>
           </div>
           {footerColumns.map((col) => (

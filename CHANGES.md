@@ -1,5 +1,45 @@
 # Changes
 
+## 0.16.0 — 2026-09-24
+
+Removed a much larger fabrication than the Carfax branding fixed in 0.15.x:
+the Account page's "Buying Power Vault" widget claimed a real financing
+pre-approval — a "Soft Pull" credit check at a specific score (840),
+a "Guaranteed" 5.9% APR, a "Pre-locked" monthly payment, and a downloadable
+"Pre-Approval PDF" — none of which back onto any real credit or financing
+integration. This is the exact "fake financing pre-qualification" pattern
+the earlier market review named, just not caught in the first pass because
+it wasn't on the Home page.
+
+- `AccountDesktop.tsx`: removed the entire Buying Power Vault card and its
+  matching `Buying Capacity @ 840 Tier 1` header stat. Renamed "KYC & Vault
+  Docs" → "My Documents" and dropped its fake "100% Verified" badge (no
+  real document-verification process exists). Dropped the fake
+  "Telemetry Synced / Last refresh: Just now" pill, the "KYC Identity
+  Verified" tooltip, and the "Level 3 Certified" badge — softened
+  "Verified Trader" → "Verified Account" and "Security & KYC" → "Security"
+  to match what's actually true (a signed-in, authenticated account, not a
+  KYC-compliant trading platform).
+- `src/data/accountDesktop.ts`: `'Verified by Stripe Identity'` (no Stripe
+  integration exists) → `'Uploaded by you'`; `'Push alert on new binding
+  bids'` → `'Alert on new dealer bids'`; dropped the `'2 Binding'` label on
+  the cash-offers stat (a dealer bid isn't a binding sale).
+- `DesktopFooter.tsx` — **shared across every desktop page**, including
+  the Home page already "finished" in 0.15.0: its intro paragraph claimed
+  "algorithmic automotive trading and valuation infrastructure" and a
+  "Marketplace Live — 14,208 verified units active" badge, neither of
+  which reflect this app's actual scale or the fact that no pricing
+  algorithm exists. Rewrote to plainly describe what the app is (verified
+  buyers/sellers, price-vs-market comparison, history reports) and removed
+  the fake live-count badge. Verified this fix reaches Home's footer too,
+  not just Account's, since the component is shared via `DesktopPageShell`
+  as well as direct use in `HomeDesktop.tsx`/`AccountDesktop.tsx`.
+- Verified: rebuild + lint clean. Screenshotted both pages via a temporary,
+  unauthenticated preview route added just for this check and fully
+  reverted afterward (`/account` stays behind `ProtectedRoute`) — needed
+  because Account requires real Firebase Auth sign-in that can't be
+  scripted headlessly.
+
 ## 0.15.1 — 2026-09-23
 
 Continued the trust-copy repositioning (0.15.0) onto Dealer Console and
