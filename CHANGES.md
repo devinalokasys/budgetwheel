@@ -1,5 +1,37 @@
 # Changes
 
+## 0.16.1 — 2026-09-24
+
+First production deploy went live at https://budgetwheel.web.app, which
+surfaced two real issues the earlier repositioning work (0.15.0–0.16.0)
+missed because they aren't in the visible page components:
+
+- **SEO meta tags still had the fabricated claims.** `index.html`'s
+  `<title>`, description, keywords, OG tags, Twitter card tags, and
+  JSON-LD structured data all still said "real-time algorithmic
+  valuation," "100% verified vehicle histories," "digital escrow
+  protection," and "instant dealer cash buyout guarantees" — the exact
+  claims already removed from Home/Account. This is what Google and link
+  previews actually show, so it's the most externally-visible copy in the
+  app and the last place it should've been left stale. Rewrote all of it
+  to match the shipped positioning (verified accounts, vehicle history
+  reports, price-vs-market transparency).
+- **CSP was silently blocking the dark-mode init script in production.**
+  `index.html` has a small inline `<script>` that reads `localStorage`
+  and applies the `.dark` class before React mounts, to avoid a flash of
+  the wrong theme. `firebase.json`'s CSP (`script-src 'self'
+  https://apis.google.com`) has no allowance for inline scripts, so this
+  silently failed in production — confirmed via a Playwright console-error
+  check the moment the live site was checked, invisible in local dev where
+  no CSP header is sent. Fixed by adding the script's exact
+  `sha256-NfGkiP00c+rcoSr/GYqyJdGNTCZsySAYMDkF2SLi9k0=` hash to
+  `script-src` (verified the hash matches both the source and Vite's
+  built `dist/index.html` byte-for-byte, so this won't drift silently if
+  the build pipeline changes).
+- Deployed via the GitHub Actions workflow added in 0.13.0, now that
+  `FIREBASE_SERVICE_ACCOUNT` is set — confirmed live and rendering
+  correctly via Playwright screenshot against the production URL.
+
 ## 0.16.0 — 2026-09-24
 
 Removed a much larger fabrication than the Carfax branding fixed in 0.15.x:
