@@ -305,6 +305,14 @@ non-existent Firebase project.
   card, calling `getOrCreateConversation`. One deliberate gap: no
   "mark as read" — `unreadCount*` fields exist and are displayed, but
   nothing resets them on opening a thread.
+- ~~`HomeDesktop.tsx`'s showcase section and `AccountDesktop.tsx` on mock
+  data~~ — done. `HomeDesktop.tsx`'s "A Few Listings Worth a Look" now
+  fetches real active listings via a new `toShowcaseListingView` mapper
+  (mirrors `toFeaturedListingView`). `AccountDesktop.tsx` — previously
+  100% static and not even listed here as a gap — now reads the signed-in
+  user's real listings, trade submissions, and conversations; each
+  listing card surfaces real `viewCount`/`saveCount`/`inquiryCount` and
+  real purchase offers via the previously-unused `listOffersForListing`.
 - **The one remaining major gap: `DealerConsole.tsx` /
   `DealerConsoleDesktop.tsx`** — dealer's own inventory, stat tiles,
   incoming trade bids are still `data/dealer.ts`/`data/dealerDesktop.ts`
