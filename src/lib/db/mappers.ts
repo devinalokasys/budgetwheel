@@ -64,7 +64,7 @@ async function historyPillFor(l: VehicleListing): Promise<{ label: string; icon:
   }
 }
 
-async function primaryImageUrl(listingId: string): Promise<string> {
+export async function primaryImageUrl(listingId: string): Promise<string> {
   const images = await db.listImages('listing', listingId)
   if (images.length === 0) return '/images/logo-brand.jpg'
   return db.getImageUrl(images[0])

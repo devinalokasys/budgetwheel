@@ -1,5 +1,48 @@
 # Changes
 
+## 0.18.0 — 2026-09-24
+
+Wired `AccountDesktop.tsx` to real data — it was entirely static mock
+data (`data/accountDesktop.ts`), the one page not mentioned in
+`docs/db-design.md`'s gap list even though it had zero `db` usage
+anywhere. Now shows the signed-in user's actual listings, trade
+submissions, and buyer messages.
+
+- Profile header reads the real `User` record from `useAuth()`'s
+  `profile` (display name, email, avatar, member-since date, account
+  type) instead of a hardcoded "Marcus Sterling."
+- "My Garage Fleet" now maps over the user's real listings
+  (`db.listListings({ sellerId })`) and real trade submissions
+  (`db.listTradeSubmissionsBySeller`), rather than assuming a fixed
+  "one active listing + one stored vehicle" shape — a real account can
+  have any number of each, including zero, which now shows a proper
+  empty state ("Your garage is empty" → List a Car) instead of always
+  rendering two demo cards.
+- Each listing card shows real `viewCount`/`saveCount`/`inquiryCount`
+  (fields that already existed on `VehicleListing` but were never
+  displayed anywhere) plus real purchase offers via the previously-unused
+  `listOffersForListing` — this is the first page in the app where a
+  seller can actually see offers on their own listing. Renamed "Top
+  Dealer Cash Buyout" → "Top Purchase Offer" for listings, since
+  `purchase_offer` (a buyer's offer) and `trade_bid` (a dealer's bid on a
+  trade submission) are different `OfferKind`s in the schema — the mock
+  had conflated them.
+- "Buyer Inquiries" now lists real conversations where the user is the
+  seller (`db.listConversations`, filtered), reusing the same query
+  pattern `Messages.tsx`'s "Chat & Leads" tab already established; each
+  row links to the real `/messages/:conversationId` thread.
+- Exported `primaryImageUrl` from `mappers.ts` (was module-private) so
+  this page can resolve a listing's photo without duplicating that logic.
+- Documents and Market Alerts sections stay static/UI-only — there's no
+  document-storage or notification-preference table in the schema to back
+  them, and building that is a separate feature, not a wiring pass.
+- Verified: rebuild + lint clean. Tested against the real seed data's
+  `user-private-1` (3 listings + 1 trade submission) via a temporary,
+  unauthenticated preview route added just for this check and fully
+  reverted afterward — confirmed real prices, real below-market deltas,
+  correct summed "Active Listings" ask total, and correct empty states
+  for offers/inquiries where no seed data exists for those.
+
 ## 0.17.0 — 2026-09-24
 
 Wired HomeDesktop's "A Few Listings Worth a Look" showcase to real
