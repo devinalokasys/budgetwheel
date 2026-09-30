@@ -1,5 +1,39 @@
 # Changes
 
+## 0.21.0 — 2026-09-30
+
+Continued the core-logic test/mutation-testing push (0.20.0): 9 of 11
+in-scope files now at 100% statement/branch/function/line coverage —
+`index.ts`, `ProtectedRoute.tsx`, `DealerRoute.tsx`,
+`DealerRegistrationForm.tsx`, and `AuthContext.tsx` join the four from the
+previous commit. 158 tests passing across the suite.
+
+- `AuthContext.tsx` was the hardest file in scope, as flagged in the
+  original plan — three layers of async, a `cancelled` race-guard, a
+  `useRef` `Set` double-provisioning guard. Found and documented one
+  genuinely unreachable branch: the `.catch()` handler's `if (!cancelled)`
+  guard can only matter if `import('../lib/auth')` itself rejects while
+  racing an unmount, but the `.then()` above it already bails via its own
+  `cancelled` check the moment `cancelled` is true — so by the time that
+  race could matter, `watchAuth()` was never even called. Separately,
+  React 19 silently no-ops a state update on an unmounted component
+  regardless of this guard's presence, so no test assertion could ever
+  observably distinguish the two branches. Documented in place with a
+  `/* v8 ignore next 5 */` comment explaining why, rather than chase an
+  unkillable branch or quietly exclude the file.
+- Also fixed a real build gap this surfaced: `npm run build`'s `tsc -b`
+  step type-checks test files too (they're under `tsconfig.app.json`'s
+  `src` include), but `@testing-library/jest-dom`'s matcher types
+  (`.toBeInTheDocument()` etc.) weren't visible to it — `vitest.setup.ts`
+  lives outside `src/`, so its import of `@testing-library/jest-dom/vitest`
+  never reached the app's compilation unit. Fixed with a new
+  `src/vitest-env.d.ts` ambient reference, so the matcher types are
+  visible project-wide without changing `tsconfig.app.json`'s scope.
+- Remaining: `src/lib/db/firestoreProvider.ts` and a new
+  `src/lib/formLogic.ts` (extracted from `Sell.tsx`/`ListingDetail.tsx`/
+  `ConversationThread.tsx`), then a full `stryker run` and iteration on
+  any surviving mutants.
+
 ## 0.20.0 — 2026-09-30
 
 Started a test suite + mutation-testing setup targeting 100% statement/

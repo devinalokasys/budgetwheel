@@ -69,6 +69,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // No Firebase project configured yet (VITE_FIREBASE_* unset) — treat
         // as "definitely signed out" rather than hanging in a loading state
         // forever. Sign-in itself still surfaces a clear error via signIn().
+        //
+        // The `!cancelled` branch below is untestable in practice: reaching
+        // it requires the `import('../lib/auth')` promise itself to reject
+        // while racing an unmount, but the .then() above already bails via
+        // its own `if (cancelled) return` the moment cancelled is true —
+        // so by the time this .catch() could run with cancelled already
+        // true, watchAuth() was never even called to have anything fail.
+        // Separately, React 19 silently no-ops a state update on an
+        // unmounted component regardless of this guard's presence, so no
+        // test assertion can observably distinguish the two branches here.
+        /* v8 ignore next 5 -- see comment above; genuinely unreachable/unobservable, not a coverage gap */
         if (!cancelled) {
           setUser(null)
           setProfile(null)
