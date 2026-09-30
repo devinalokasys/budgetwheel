@@ -240,8 +240,12 @@ export async function toBrowseListingView(l: VehicleListing): Promise<BrowseList
   const badge = computeDealBadge(l)
   const toneMap = { great: 'secondary', good: 'secondary', fair: 'tertiary' } as const
   const priceNote =
+    // badge.tone === 'great' is only reachable via computeDealBadge's
+    // delta > 0 branch, which only runs once marketAvgCents is already
+    // known non-null — so unlike the ternary's other operand, no `?? `
+    // fallback is reachable here; l.marketAvgCents is safe to use directly.
     badge.tone === 'great' && badge.priceDeltaLabel
-      ? `$${(((l.marketAvgCents ?? l.priceCents) - l.priceCents) / 100).toLocaleString('en-US')} below avg`
+      ? `$${((l.marketAvgCents! - l.priceCents) / 100).toLocaleString('en-US')} below avg`
       : badge.tone === 'fair'
         ? 'Priced at market'
         : ''

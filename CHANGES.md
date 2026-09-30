@@ -1,5 +1,59 @@
 # Changes
 
+## 0.20.0 — 2026-09-30
+
+Started a test suite + mutation-testing setup targeting 100% statement/
+branch coverage and 100% Stryker mutation score, scoped to "core logic"
+(the data/mapper layer, auth route guards, form validation — explicitly
+not the ~40 presentational page components). The repo had zero test
+tooling before this. In progress — this entry covers the toolchain setup
+and the first 4 of 11 in-scope files; more land in follow-up commits.
+
+- Installed Vitest 5 + `@vitest/coverage-v8` (native ESM/`import.meta.env`
+  support, no Babel/ts-jest fakery needed), `@testing-library/react` +
+  `jest-dom` + `user-event` + `dom`, `jsdom`, `fake-indexeddb`, and
+  `@stryker-mutator/core` + `vitest-runner` + `typescript-checker`. All
+  versions verified against the live npm registry before pinning, not
+  guessed. `npm audit fix` cleared 5 pre-existing transitive dev-tooling
+  vulnerabilities (DoS-class, dev-only, not shipped to users) surfaced by
+  the install.
+- New `vitest.config.ts` (deliberately separate from `vite.config.ts` —
+  that file's `BUILD_TARGET` build-entry branching is irrelevant to
+  tests), `vitest.setup.ts`, `stryker.config.mjs`, `tsconfig.stryker.json`.
+  Coverage/mutation scope is an explicit 11-file allowlist, not `src/**`
+  — `provider.ts`/`schema.ts` are pure type declarations with zero
+  executable code, and presentational pages are out of scope by design.
+- `src/lib/auth.ts`, `src/lib/firebase.ts`, `src/lib/db/mappers.ts` at
+  100%/100%/100%/100% (statements/branches/functions/lines). Found and
+  fixed one genuinely dead branch while chasing branch coverage: `toBrowseListingView`'s
+  `l.marketAvgCents ?? l.priceCents` fallback in `mappers.ts` could never
+  actually fire — `badge.tone === 'great'` is only reachable via
+  `computeDealBadge`'s `delta > 0` branch, which itself only runs once
+  `marketAvgCents` is already known non-null. Simplified to
+  `l.marketAvgCents!` rather than carry forward an untestable branch.
+- `src/lib/db/localProvider.ts` at 100%/100%/100%/100% (50 tests). Hit a
+  real infrastructure problem along the way: the originally-planned
+  per-test `vi.resetModules()` + `indexedDB.deleteDatabase()` reset
+  pattern leaks IDB connections (nothing closes localProvider's internal
+  cached connection just because the JS module cache was reset), and
+  fake-indexeddb deadlocks once enough leaked connections accumulate
+  within one test file. Fixed by importing the module once per file and
+  clearing every object store's *data* between tests instead of deleting/
+  recreating the database — same isolation guarantee, no connection
+  churn. One remaining branch (a seed listing with zero images skipping
+  the primary-image second pass) isn't reachable through the real seed
+  data, so it's tested via a one-off `vi.doMock('./seed', ...)` with a
+  synthetic zero-image fixture.
+- `npm test` / `test:watch` / `test:coverage` / `test:mutation` scripts.
+  `coverage/` and Stryker's temp/report dirs added to `.gitignore` as
+  generated artifacts.
+- Remaining: `src/lib/db/index.ts`, `src/lib/db/firestoreProvider.ts`,
+  `src/components/ProtectedRoute.tsx`, `src/components/DealerRoute.tsx`,
+  `src/components/DealerRegistrationForm.tsx`, `src/contexts/AuthContext.tsx`,
+  and a new `src/lib/formLogic.ts` (extracted from inline validation
+  logic in `Sell.tsx`/`ListingDetail.tsx`/`ConversationThread.tsx`), then
+  a full `stryker run` and iteration on any surviving mutants.
+
 ## 0.19.0 — 2026-09-24
 
 Split the Dealer Portal into its own deployed app, on its own Firebase

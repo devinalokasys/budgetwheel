@@ -13,6 +13,12 @@ dist-dealer
 dist-ssr
 *.local
 
+# Generated test/mutation reports — regenerate via npm run test:coverage /
+# npm run test:mutation, never hand-edited.
+coverage
+.stryker-tmp
+reports/mutation
+
 # Real env files carry live Firebase config values — never commit them.
 # .env.example stays tracked as the (blank-valued) template.
 .env
