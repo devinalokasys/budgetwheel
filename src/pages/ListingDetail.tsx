@@ -5,6 +5,7 @@ import FavoriteButton from '../components/FavoriteButton'
 import { db } from '../lib/db'
 import { toListingDetailView, type ListingDetailView } from '../lib/db/mappers'
 import { useAuth } from '../hooks/useAuth'
+import { buildPurchaseOfferInput, parseDisplayedPriceDollars } from '../lib/formLogic'
 
 const badgeTone: Record<ListingDetailView['dealBadge']['tone'], string> = {
   secondary: 'bg-secondary-container text-on-secondary-container',
@@ -66,19 +67,15 @@ export default function ListingDetail() {
       return
     }
     setOfferSubmitting(true)
-    await db.createOffer({
-      id: `offer-${crypto.randomUUID()}`,
-      kind: 'purchase_offer',
-      listingId: listing.id,
-      tradeSubmissionId: null,
-      fromUserId: user.uid,
-      toUserId: listing.sellerId,
-      amountCents: Math.round(Number(offerAmount) * 100),
-      status: 'pending',
-      message: offerMessage || null,
-      createdAt: Date.now(),
-      respondedAt: null,
-    })
+    await db.createOffer(
+      buildPurchaseOfferInput({
+        listingId: listing.id,
+        sellerId: listing.sellerId,
+        fromUserId: user.uid,
+        offerAmount,
+        offerMessage,
+      }),
+    )
     setOfferSubmitting(false)
     setOfferSent(true)
   }
@@ -310,7 +307,7 @@ export default function ListingDetail() {
                   value={offerAmount}
                   onChange={(e) => setOfferAmount(e.target.value)}
                   className="h-11 px-4 bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-lg placeholder:text-outline focus:outline-none focus:bg-surface-container shadow-inner"
-                  placeholder={String(Math.round(Number(listing.price.replace(/[^0-9.]/g, '')) || 0))}
+                  placeholder={String(parseDisplayedPriceDollars(listing.price))}
                 />
               </div>
               <div className="flex flex-col gap-space-xs">

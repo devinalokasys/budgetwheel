@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import Icon from '../components/Icon'
 import { db } from '../lib/db'
 import { useAuth } from '../hooks/useAuth'
+import { buildTradeSubmissionInput } from '../lib/formLogic'
 import type { Condition } from '../lib/db/schema'
 
 const conditions: { value: Condition; label: string }[] = [
@@ -9,8 +10,6 @@ const conditions: { value: Condition; label: string }[] = [
   { value: 'good', label: 'Good' },
   { value: 'fair', label: 'Fair' },
 ]
-
-const HOUR = 60 * 60 * 1000
 
 export default function Sell() {
   const { user } = useAuth()
@@ -23,24 +22,7 @@ export default function Sell() {
     if (!user) return
     const form = new FormData(e.currentTarget)
     setSubmitting(true)
-    await db.createTradeSubmission({
-      id: `trade-${crypto.randomUUID()}`,
-      sellerId: user.uid,
-      vin: String(form.get('vin') ?? '').toUpperCase(),
-      year: Number(form.get('year')),
-      make: String(form.get('make')),
-      model: String(form.get('model')),
-      trim: String(form.get('trim') || '') || null,
-      mileage: Number(form.get('mileage')),
-      condition,
-      carfaxReportId: null,
-      imageIds: [],
-      kbbEstimateCents: null,
-      aiRecommendationCents: null,
-      status: 'open',
-      biddingClosesAt: Date.now() + 48 * HOUR,
-      createdAt: Date.now(),
-    })
+    await db.createTradeSubmission(buildTradeSubmissionInput(form, { sellerId: user.uid, condition }))
     setSubmitting(false)
     setSubmitted(true)
   }

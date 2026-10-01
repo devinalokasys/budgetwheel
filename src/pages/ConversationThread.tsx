@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import Icon from '../components/Icon'
 import { db } from '../lib/db'
 import { useAuth } from '../hooks/useAuth'
+import { buildMessageInput } from '../lib/formLogic'
 import type { Conversation, Message, VehicleListing } from '../lib/db/schema'
 
 function formatUsd(cents: number): string {
@@ -82,16 +83,10 @@ export default function ConversationThread() {
 
   async function handleSend(e: FormEvent) {
     e.preventDefault()
-    if (!user || !thread || !body.trim()) return
+    if (!user || !thread) return
+    const message = buildMessageInput({ conversationId: thread.conversation.id, senderId: user.uid, body })
+    if (!message) return
     setSending(true)
-    const message: Message = {
-      id: `msg-${crypto.randomUUID()}`,
-      conversationId: thread.conversation.id,
-      senderId: user.uid,
-      body: body.trim(),
-      createdAt: Date.now(),
-      readAt: null,
-    }
     await db.sendMessage(message)
     setMessages((prev) => [...prev, message])
     setBody('')

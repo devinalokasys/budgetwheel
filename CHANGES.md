@@ -1,5 +1,36 @@
 # Changes
 
+## 0.23.0 — 2026-09-30
+
+**100% statement/branch/function/line coverage reached across all 11
+in-scope core-logic files.** `npx vitest run --coverage` reports "No
+files with missing coverage. 11 files fully covered." — 222 tests total.
+Mutation testing (`stryker run`) is the next and final step.
+
+- New `src/lib/formLogic.ts`: extracted the real coercion/validation logic
+  that was inline in three page event handlers — `Sell.tsx`'s VIN
+  uppercasing/trim-nullification/48-hour bidding-deadline math,
+  `ListingDetail.tsx`'s offer-amount-to-cents conversion and the
+  display-price-string parser used for the offer input's placeholder, and
+  `ConversationThread.tsx`'s message-body trim/empty-to-null guard. Each
+  extracted function takes an injectable `now` parameter (default
+  `Date.now()`) instead of calling `Date.now()` internally, which is what
+  makes the time-math genuinely unit-testable without fake-timer
+  machinery. The pages keep their own user/thread/listing presence
+  guards inline — those are orchestration wiring, not validation logic,
+  and stay out of the tested/mutated scope by the same "presentational
+  pages excluded" boundary set at the start of this work. One naming
+  correction caught while writing this: the extracted price-parser
+  returns *dollars*, not cents (`listing.price` is a pre-formatted
+  display string like "$33,800") — named `parseDisplayedPriceDollars`,
+  not the `...Cents` name floated during planning, to avoid shipping a
+  function whose name lies about its own units.
+- Verified both `npm run build` and `npm run build:dealer` still succeed
+  and lint stays clean after wiring the three pages to the extracted
+  functions — this was a behavior-preserving refactor (confirmed by the
+  16 new `formLogic.test.ts` assertions matching the original inline
+  logic's exact output shapes), not a feature change.
+
 ## 0.22.0 — 2026-09-30
 
 `src/lib/db/firestoreProvider.ts` — the last of the big files — now at
