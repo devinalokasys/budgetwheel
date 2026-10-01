@@ -1,5 +1,24 @@
 # Changes
 
+## 0.22.0 — 2026-09-30
+
+`src/lib/db/firestoreProvider.ts` — the last of the big files — now at
+100% statement/branch/function/line coverage too. 206 tests passing
+across the suite; `npx vitest run --coverage` reports "No files with
+missing coverage. 10 files fully covered." (10, not 11 — `formLogic.ts`
+doesn't exist yet, next up).
+
+- Mocked `firebase/firestore`'s `where`/`query`/`limit`/`collection`/`doc`
+  as argument-recording pass-throughs rather than opaque real SDK
+  objects, so "was the right query built" is a plain assertion on mock
+  call args instead of inspecting private SDK internals — confirmed this
+  scales cleanly across all 25 methods on the provider.
+- One easy miss caught by the coverage report itself: both
+  `listTradeSubmissions` tests used an empty result set, so the
+  `snap.docs.map(...)` callback's body never actually executed (0 items
+  to map over) — function/statement coverage flagged it precisely.
+  Fixed by giving one of the two tests real data to map over.
+
 ## 0.21.0 — 2026-09-30
 
 Continued the core-logic test/mutation-testing push (0.20.0): 9 of 11
