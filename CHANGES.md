@@ -1,5 +1,28 @@
 # Changes
 
+## 0.23.1 — 2026-10-26
+
+Finished removing the Carfax branding that 0.15.x started. Two
+user-visible strings in `src/lib/db/mappers.ts` were missed: listings
+without a history report showed a "Carfax Pending" badge, and featured
+deal cards labelled the history spec "CARFAX". Renamed to "History
+Pending" (matching `ListingDetail`'s existing "Full history report is
+being prepared" copy) and "HISTORY". Also changed the seed BMW listing's
+description from "clean Carfax" to "clean title". Updated the matching
+assertions in `mappers.test.ts`. Internal identifiers (the `carfaxReports`
+collection, the `CarfaxReport` type) are unchanged, since renaming the
+collection would need a data migration and nobody sees those names.
+
+- Not changed: live Firestore data. The production seed already ran, so
+  if that BMW listing was seeded to production, its stored description
+  still says "clean Carfax" until it's edited there.
+- The committed `package-lock.json` root version had drifted to 0.19.0
+  while `package.json` moved on; it now matches again.
+- Verified: 222 unit tests pass, lint is clean, both `build` and
+  `build:dealer` succeed, and the homepage featured card renders
+  "HISTORY — Clean Title" locally with no "Carfax" text anywhere on the
+  page.
+
 ## 0.23.0 — 2026-09-30
 
 **100% statement/branch/function/line coverage reached across all 11

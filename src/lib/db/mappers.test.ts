@@ -148,7 +148,7 @@ describe('toFeaturedListingView', () => {
     expect(view.distance).toBe('San Jose, CA')
     expect(view.specs).toEqual([
       { label: 'MILEAGE', value: '28,100 mi' },
-      { label: 'CARFAX', value: 'Clean Title', icon: 'shield' },
+      { label: 'HISTORY', value: 'Clean Title', icon: 'shield' },
     ])
   })
 
@@ -204,11 +204,11 @@ describe('toFeaturedListingView', () => {
     expect(view.seller).toBe('Dealer')
   })
 
-  it('shows Carfax Pending when there is no carfax report, with hourglass icon', async () => {
+  it('shows History Pending when there is no carfax report, with hourglass icon', async () => {
     dbMock.getCarfaxReportByVin.mockResolvedValue(null)
     const view = await toFeaturedListingView(baseListing())
-    expect(view.historyPill).toEqual({ label: 'Carfax Pending', icon: 'hourglass_top' })
-    expect(view.specs[1]).toEqual({ label: 'CARFAX', value: 'Carfax Pending', icon: 'hourglass_top' })
+    expect(view.historyPill).toEqual({ label: 'History Pending', icon: 'hourglass_top' })
+    expect(view.specs[1]).toEqual({ label: 'HISTORY', value: 'History Pending', icon: 'hourglass_top' })
   })
 
   it('shows a non-clean title status capitalized, with 1-Owner when there is exactly one owner and no accidents', async () => {

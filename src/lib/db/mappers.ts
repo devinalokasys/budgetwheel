@@ -52,7 +52,7 @@ function computeDealBadge(l: VehicleListing): DealBadge {
 
 async function historyPillFor(l: VehicleListing): Promise<{ label: string; icon: string }> {
   const carfax = await db.getCarfaxReportByVin(l.vin)
-  if (!carfax) return { label: 'Carfax Pending', icon: 'hourglass_top' }
+  if (!carfax) return { label: 'History Pending', icon: 'hourglass_top' }
   const parts: string[] = []
   if (carfax.titleStatus === 'clean') parts.push('Clean Title')
   else parts.push(`${carfax.titleStatus[0].toUpperCase()}${carfax.titleStatus.slice(1)} Title`)
@@ -118,7 +118,7 @@ export async function toFeaturedListingView(l: VehicleListing): Promise<Listing>
     distance: `${l.location.city}, ${l.location.state}`,
     specs: [
       { label: 'MILEAGE', value: formatMileageFull(l.mileage) },
-      { label: 'CARFAX', value: historyPill.label.split(' • ')[0], icon: historyPill.icon },
+      { label: 'HISTORY', value: historyPill.label.split(' • ')[0], icon: historyPill.icon },
     ],
   }
 }

@@ -193,7 +193,7 @@ export const seedListingSpecs: SeedListingSpec[] = [
       drivetrain: 'AWD',
       engine: '2.0T I4',
       zeroToSixtySec: 5.3,
-      description: '2022 BMW 330i xDrive, AWD, clean Carfax, dealer verified.',
+      description: '2022 BMW 330i xDrive, AWD, clean title, dealer verified.',
       location: { city: 'San Jose', state: 'CA', zip: '95129', lat: null, lng: null },
       listedAt: now - 4 * DAY,
       carfaxReportId: 'carfax-bmw-330i',
